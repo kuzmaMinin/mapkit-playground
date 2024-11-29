@@ -8,6 +8,7 @@ node_modules/
 dist/
 web-build/
 expo-env.d.ts
+.idea/
 
 # Native
 *.orig.*
@@ -16,6 +17,8 @@ expo-env.d.ts
 *.p12
 *.key
 *.mobileprovision
+
+android
 
 # Metro
 .metro-health-check*
@@ -36,3 +39,8 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+
+# modules
+modules/yandex-map/android/build
+modules/yandex-map/android/.gradle
+modules/yandex-map/android/.idea

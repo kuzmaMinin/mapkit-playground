@@ -15,7 +15,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.porttranzitdev.kit"
     },
     "web": {
       "bundler": "metro",
@@ -32,7 +33,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      ["./mapkit.plugin.js", { "apiKey": "6a9830c3-bc76-4774-8c73-120562df9a6e" }]
     ],
     "experiments": {
       "typedRoutes": true
