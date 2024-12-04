@@ -1,5 +1,5 @@
 import type { StyleProp, ViewStyle } from "react-native";
-import * as React from "react";
+import { ReactNode } from "react";
 
 export type YandexMapModuleEvents = {
   onChange: (params: ChangeEventPayload) => void;
@@ -9,12 +9,17 @@ export type ChangeEventPayload = {
   value: string;
 };
 
-interface IMarker {
-  latitude: number;
-  longitude: number;
-}
-
 export type YandexMapViewProps = {
   style?: StyleProp<ViewStyle>;
-  markers?: IMarker[];
+  children?: ReactNode;
+};
+
+export type MarkerViewProps = {
+  style?: StyleProp<ViewStyle>;
+  children?: ReactNode;
+  coordinate: {
+    latitude: number;
+    longitude: number;
+  };
+  key: string;
 };
