@@ -1,6 +1,15 @@
 import type { StyleProp, ViewStyle } from "react-native";
 import { ReactNode } from "react";
 
+export type IconAsset =
+  | string
+  | number
+  | {
+      height: number;
+      uri: string;
+      width: number;
+    };
+
 export type YandexMapModuleEvents = {
   onChange: (params: ChangeEventPayload) => void;
 };
@@ -10,16 +19,18 @@ export type ChangeEventPayload = {
 };
 
 export type YandexMapViewProps = {
-  style?: StyleProp<ViewStyle>;
   children?: ReactNode;
+  style?: StyleProp<ViewStyle>;
 };
 
 export type MarkerViewProps = {
-  style?: StyleProp<ViewStyle>;
-  children?: ReactNode;
   coordinate: {
     latitude: number;
     longitude: number;
   };
-  key: string;
+  children?: ReactNode;
+  style?: StyleProp<ViewStyle>;
+  iconStyle?: StyleProp<ViewStyle>;
+  iconSource?: IconAsset;
+  icon?: string | null;
 };
