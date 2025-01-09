@@ -80,10 +80,20 @@ export interface IMarkerViewProps {
   coordinate: ICoordinate;
   children?: ReactNode;
   style?: StyleProp<ViewStyle>;
-  iconSource?: IconAsset;
-  icon?: string | null;
+  icon?: IconAsset;
   text?: string;
   textStyle?: TextStyle;
   iconStyle?: IIconStyle;
   animated?: boolean;
+}
+
+export interface INativeMarkerViewProps {
+  coordinate: ICoordinate;
+  children?: ReactNode;
+  style?: StyleProp<ViewStyle>;
+  iconSource?: IconAsset;
+  text?: string;
+  textStyle?: TextStyle;
+  iconStyle?: IIconStyle;
+  iconData?: { icon?: string | null; animated?: boolean };
 }

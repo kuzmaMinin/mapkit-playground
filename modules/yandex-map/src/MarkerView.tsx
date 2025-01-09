@@ -1,15 +1,19 @@
 import { requireNativeView } from "expo";
 import * as React from "react";
-import { IconAsset, IMarkerViewProps } from "@/modules/yandex-map";
+import {
+  IconAsset,
+  IMarkerViewProps,
+  INativeMarkerViewProps,
+} from "@/modules/yandex-map";
 import { View } from "react-native";
 
 import { Asset } from "expo-asset";
 
-const NativeView: React.ComponentType<IMarkerViewProps> =
+const NativeView: React.ComponentType<INativeMarkerViewProps> =
   requireNativeView("Marker");
 
 export default function MarkerView({
-  iconSource,
+  icon,
   children,
   coordinate,
   text,
@@ -17,17 +21,16 @@ export default function MarkerView({
   iconStyle,
   animated,
 }: IMarkerViewProps) {
-  const asset = resolveImageAsset(iconSource);
+  const asset = resolveImageAsset(icon);
 
   return (
     <NativeView
       style={{ position: "absolute" }}
-      icon={asset}
       coordinate={coordinate}
       text={text}
       textStyle={textStyle}
       iconStyle={iconStyle}
-      animated={animated}
+      iconData={{ icon: asset, animated }}
     >
       {children && <View style={{ zIndex: 0 }}>{children}</View>}
     </NativeView>

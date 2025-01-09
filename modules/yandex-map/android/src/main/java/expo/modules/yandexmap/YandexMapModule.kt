@@ -27,18 +27,17 @@ class MarkerModule : Module() {
         view.setTextStyleValue(style)
       }
 
-      Prop("icon") { view: MarkerView, icon: String? ->
-        view.setIconSource(icon)
+      Prop("iconData") { view: MarkerView, map: Map<String, Any?> ->
+        val icon = map["icon"] as? String?
+        val animated = map["animated"] as? Boolean ?: false
+
+        view.setIconSource(icon, animated)
       }
 
       Prop("iconStyle") { view: MarkerView, map: Map<String, Any?> ->
         val style = MarkerIconStyle.fromMap(map)
 
         view.setIconStyleValue(style)
-      }
-
-      Prop("animated") { view: MarkerView, animated: Boolean ->
-        view.setAnimatedValue(animated)
       }
     }
   }

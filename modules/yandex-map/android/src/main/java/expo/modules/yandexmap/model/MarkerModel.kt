@@ -7,6 +7,8 @@ import com.yandex.mapkit.map.IconStyle
 import com.yandex.mapkit.map.Rect
 import com.yandex.mapkit.map.RotationType
 import com.yandex.mapkit.map.TextStyle
+import com.yandex.runtime.image.AnimatedImageProvider
+import com.yandex.runtime.image.ImageProvider
 import expo.modules.kotlin.records.Field
 import expo.modules.kotlin.records.Record
 
@@ -104,3 +106,12 @@ class MarkerIconStyle(
     }
   }
 }
+
+data class PlacemarkConfig(
+  var coordinate: Point = Point(0.0, 0.0),
+  var text: String? = null,
+  var textStyle: TextStyle = TextStyle(),
+  var iconStyle: IconStyle = IconStyle(),
+  var imageProvider: ImageProvider? = null,
+  var animatedImageProvider: AnimatedImageProvider? = null
+)

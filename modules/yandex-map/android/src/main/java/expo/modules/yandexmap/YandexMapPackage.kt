@@ -46,21 +46,10 @@ class YandexMapPackage : Package {
                 }
             }
 
-            override fun onPause(activity: Activity) {
-                MapKitFactory.getInstance().onStop()
-                MapView(activityContext).onStop()
-                super.onPause(activity)
-            }
-
-            override fun onResume(activity: Activity) {
-                super.onPause(activity)
-                MapKitFactory.getInstance().onStart()
-                MapView(activityContext).onStart()
-            }
-
             override fun onDestroy(activity: Activity) {
                 MapKitFactory.getInstance().onStop()
                 MapView(activityContext).onStop()
+
                 super.onDestroy(activity)
             }
         })

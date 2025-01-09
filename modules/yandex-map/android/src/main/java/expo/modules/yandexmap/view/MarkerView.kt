@@ -6,75 +6,104 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.view.View
-import com.yandex.mapkit.geometry.Point
+import androidx.core.view.isVisible
 import com.yandex.mapkit.map.IconStyle
+import com.yandex.mapkit.map.PlacemarkMapObject
 import com.yandex.mapkit.map.TextStyle
+import com.yandex.runtime.image.AnimatedImageProvider
 import com.yandex.runtime.image.ImageProvider
 import expo.modules.kotlin.AppContext
 import expo.modules.kotlin.views.ExpoView
 import expo.modules.yandexmap.R
 import expo.modules.yandexmap.model.Coordinate
+import expo.modules.yandexmap.model.PlacemarkConfig
+import expo.modules.yandexmap.view.YandexMapView.Companion.mapObjects
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
 @SuppressLint("ViewConstructor")
 class MarkerView(context: Context, appContext: AppContext) : ExpoView(context, appContext) {
-  var coordinate: Point = Point(0.0, 0.0)
-  var text: String? = null
-  var textStyle: TextStyle = TextStyle()
-  var iconStyle: IconStyle? = null
-  var animated: Boolean = false
+  private var placemarkConfig: PlacemarkConfig = PlacemarkConfig()
 
-  var imageProvider: ImageProvider = ImageProvider.fromResource(context, R.drawable.placemark_icon)
+  var placemark: PlacemarkMapObject? = null
+
+  override fun onViewRemoved(child: View?) {
+    super.onViewRemoved(child)
+  }
 
   override fun onViewAdded(view: View?) {
-    super.onViewAdded(view)
-
     view?.addOnLayoutChangeListener { v, left, top, right, bottom, _, _, _, _ ->
+      view.isVisible = false
+
       val bitmap = loadBitmapFromView(v, left, top, right, bottom)
 
-      imageProvider = ImageProvider.fromBitmap(bitmap)
+      placemarkConfig.imageProvider = ImageProvider.fromBitmap(bitmap)
+    }
+
+    super.onViewAdded(view)
+  }
+
+  fun updateMarker() {
+    placemark = mapObjects?.addPlacemark()?.apply {
+      geometry = placemarkConfig.coordinate
+
+      if (placemarkConfig.text != null) {
+        setText(placemarkConfig.text!!, placemarkConfig.textStyle)
+      }
+    }
+
+    if (placemarkConfig.animatedImageProvider != null) {
+      placemark?.useAnimation()?.apply {
+        setIcon(placemarkConfig.animatedImageProvider!!, placemarkConfig.iconStyle)
+      }?.play()
+    } else {
+      placemark?.setIcon(placemarkConfig.imageProvider!!, placemarkConfig.iconStyle)
     }
   }
 
   fun setCoordinate(latLng: Coordinate) {
-    coordinate = latLng.toPoint()
+    placemarkConfig.coordinate = latLng.toPoint()
   }
 
-  fun setIconSource(iconAsset: String?) {
+  fun setIconSource(iconAsset: String?, animated: Boolean) {
+    if (iconAsset != null && animated) {
+      runBlocking {
+        placemarkConfig.animatedImageProvider = getAnimatedImageProviderSuspend(iconAsset)
+      }
+
+      return
+    }
+
     if (iconAsset != null) {
       runBlocking {
-        imageProvider = getImageProviderSuspend(iconAsset)
+        placemarkConfig.imageProvider = getImageProviderSuspend(iconAsset)
       }
+    } else {
+      placemarkConfig.imageProvider = ImageProvider.fromResource(context, R.drawable.placemark_icon)
     }
   }
 
   fun setTextValue(iconText: String?) {
     if (iconText != null && iconText != "") {
-      text = iconText
+      placemarkConfig.text = iconText
     }
   }
 
   fun setTextStyleValue(style: TextStyle?) {
     if (style != null) {
-      textStyle = style
+      placemarkConfig.textStyle = style
     }
   }
 
   fun setIconStyleValue(style: IconStyle?) {
     if (style != null) {
-      iconStyle = style
+      placemarkConfig.iconStyle = style
     }
 
-  }
-
-  fun setAnimatedValue(value: Boolean) {
-    if (value) {
-      animated = true
-    }
   }
 
   private suspend fun getImageProviderSuspend(
@@ -83,6 +112,12 @@ class MarkerView(context: Context, appContext: AppContext) : ExpoView(context, a
     val bitmap = loadImageFromUriSuspend(iconPath)
 
     return ImageProvider.fromBitmap(bitmap)
+  }
+
+  private suspend fun getAnimatedImageProviderSuspend(iconPath: String): AnimatedImageProvider {
+    val byteArray = loadByteArrayFromUriSuspend(iconPath)
+
+    return AnimatedImageProvider.fromByteArray(byteArray)
   }
 
   private fun loadBitmapFromView(
@@ -102,18 +137,31 @@ class MarkerView(context: Context, appContext: AppContext) : ExpoView(context, a
     return bitmap
   }
 
-  private suspend fun loadImageFromUriSuspend(uri: String): Bitmap? = withContext(Dispatchers.IO) {
-    try {
-      val url = URL(uri)
-      val connection = url.openConnection() as HttpURLConnection
-      connection.doInput = true
-      connection.connect()
-      val inputStream = connection.inputStream
+  private suspend fun <T> loadFromUriSuspend(uri: String, processStream: (InputStream) -> T?): T? =
+    withContext(Dispatchers.IO) {
+      try {
+        val url = URL(uri)
+        val connection = url.openConnection() as HttpURLConnection
+        connection.doInput = true
+        connection.connect()
+        val inputStream = connection.inputStream
 
-      BitmapFactory.decodeStream(inputStream)
-    } catch (e: Exception) {
-      e.printStackTrace()
-      null
+        processStream(inputStream)
+      } catch (e: Exception) {
+        e.printStackTrace()
+        null
+      }
     }
-  }
+
+  private suspend fun loadImageFromUriSuspend(uri: String): Bitmap? =
+    loadFromUriSuspend(uri) { inputStream ->
+      BitmapFactory.decodeStream(inputStream)
+    }
+
+  private suspend fun loadByteArrayFromUriSuspend(uri: String): ByteArray? =
+    loadFromUriSuspend(uri) { inputStream ->
+      inputStream.readBytes()
+    }
+
 }
+
