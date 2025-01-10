@@ -4,7 +4,7 @@ import {
   IconAsset,
   IMarkerViewProps,
   INativeMarkerViewProps,
-} from "@/modules/yandex-map";
+} from "./Marker.types";
 import { View } from "react-native";
 
 import { Asset } from "expo-asset";

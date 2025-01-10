@@ -1,28 +1,6 @@
-import type { StyleProp, ViewStyle } from "react-native";
 import { ReactNode, SyntheticEvent } from "react";
-
-export type IconAsset =
-  | string
-  | number
-  | {
-      height: number;
-      uri: string;
-      width: number;
-    };
-
-export interface YandexMapModuleEvents {
-  onChange: (params: ChangeEventPayload) => void;
-}
-
-export interface ChangeEventPayload {
-  value: string;
-}
-
-export interface YandexMapViewProps {
-  children?: ReactNode;
-  style?: StyleProp<ViewStyle>;
-  onMapReady?: (event: SyntheticEvent<any, { payload: "success" }>) => void;
-}
+import type { StyleProp, ViewStyle } from "react-native";
+import { ICoordinate } from "../common/common.types";
 
 export enum Placement {
   CENTER,
@@ -72,11 +50,6 @@ export interface IIconStyle {
   tappableArea?: ITapableArea;
 }
 
-export interface ICoordinate {
-  latitude: number;
-  longitude: number;
-}
-
 interface IBaseMarkerProps {
   coordinate: ICoordinate;
   children?: ReactNode;
@@ -87,6 +60,15 @@ interface IBaseMarkerProps {
   onPress?: (event: SyntheticEvent<any, ICoordinate>) => void;
 }
 
+export type IconAsset =
+  | string
+  | number
+  | {
+      height: number;
+      uri: string;
+      width: number;
+    };
+
 export interface IMarkerViewProps extends IBaseMarkerProps {
   icon?: IconAsset;
   animated?: boolean;
@@ -95,12 +77,4 @@ export interface IMarkerViewProps extends IBaseMarkerProps {
 export interface INativeMarkerViewProps extends IBaseMarkerProps {
   iconSource?: IconAsset;
   iconData?: { icon?: string | null; animated?: boolean };
-}
-
-export interface IPolygonViewProps {
-  points: ICoordinate[];
-  innerPoints?: ICoordinate[];
-  strokeWidth?: number;
-  strokeColor?: string;
-  fillColor?: string;
 }
