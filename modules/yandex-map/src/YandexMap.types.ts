@@ -1,5 +1,5 @@
 import type { StyleProp, ViewStyle } from "react-native";
-import { ReactNode } from "react";
+import { ReactNode, SyntheticEvent } from "react";
 
 export type IconAsset =
   | string
@@ -21,6 +21,7 @@ export interface ChangeEventPayload {
 export interface YandexMapViewProps {
   children?: ReactNode;
   style?: StyleProp<ViewStyle>;
+  onMapReady?: (event: SyntheticEvent<any, { payload: "success" }>) => void;
 }
 
 export enum Placement {
@@ -76,24 +77,30 @@ export interface ICoordinate {
   longitude: number;
 }
 
-export interface IMarkerViewProps {
+interface IBaseMarkerProps {
   coordinate: ICoordinate;
   children?: ReactNode;
   style?: StyleProp<ViewStyle>;
-  icon?: IconAsset;
   text?: string;
   textStyle?: TextStyle;
   iconStyle?: IIconStyle;
+  onPress?: (event: SyntheticEvent<any, ICoordinate>) => void;
+}
+
+export interface IMarkerViewProps extends IBaseMarkerProps {
+  icon?: IconAsset;
   animated?: boolean;
 }
 
-export interface INativeMarkerViewProps {
-  coordinate: ICoordinate;
-  children?: ReactNode;
-  style?: StyleProp<ViewStyle>;
+export interface INativeMarkerViewProps extends IBaseMarkerProps {
   iconSource?: IconAsset;
-  text?: string;
-  textStyle?: TextStyle;
-  iconStyle?: IIconStyle;
   iconData?: { icon?: string | null; animated?: boolean };
+}
+
+export interface IPolygonViewProps {
+  points: ICoordinate[];
+  innerPoints?: ICoordinate[];
+  strokeWidth?: number;
+  strokeColor?: string;
+  fillColor?: string;
 }

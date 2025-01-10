@@ -20,6 +20,7 @@ export default function MarkerView({
   textStyle,
   iconStyle,
   animated,
+  onPress,
 }: IMarkerViewProps) {
   const asset = resolveImageAsset(icon);
 
@@ -31,6 +32,7 @@ export default function MarkerView({
       textStyle={textStyle}
       iconStyle={iconStyle}
       iconData={{ icon: asset, animated }}
+      onPress={onPress}
     >
       {children && <View style={{ zIndex: 0 }}>{children}</View>}
     </NativeView>

@@ -12,7 +12,8 @@
   "android": {
     "modules": [
       "expo.modules.yandexmap.YandexMapModule",
-      "expo.modules.yandexmap.MarkerModule"
+      "expo.modules.yandexmap.MarkerModule",
+      "expo.modules.yandexmap.PolygonModule"
     ]
   }
 }

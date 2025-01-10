@@ -3,4 +3,6 @@
 export { default } from "./src/YandexMapModule";
 export { default as YandexMap } from "./src/YandexMapView";
 export { default as Marker } from "./src/MarkerView";
+export { default as Polygon } from "./src/PolygonView";
+
 export * from "./src/YandexMap.types";

@@ -11,6 +11,7 @@ import com.yandex.runtime.image.AnimatedImageProvider
 import com.yandex.runtime.image.ImageProvider
 import expo.modules.kotlin.records.Field
 import expo.modules.kotlin.records.Record
+import expo.modules.yandexmap.utils.ColorUtils
 
 class Coordinate : Record {
   @Field
@@ -38,23 +39,14 @@ class MarkerTextStyle(
     fun fromMap(map: Map<String, Any?>): TextStyle {
       return TextStyle().apply {
         size = (map["size"] as? Number)?.toFloat() ?: 10.0F
-        color = (map["color"] as? String)?.let { parseColor(it) }
+        color = (map["color"] as? String)?.let { ColorUtils.parseColor(it) }
         outlineWidth = (map["outlineWidth"] as? Number)?.toFloat() ?: 1.0F
-        outlineColor = (map["outlineColor"] as? String)?.let { parseColor(it) }
+        outlineColor = (map["outlineColor"] as? String)?.let { ColorUtils.parseColor(it) }
         placement = (map["placement"] as? Number)?.let { TextStyle.Placement.entries[it.toInt()] }
           ?: TextStyle.Placement.CENTER
         offset = (map["offset"] as? Number)?.toFloat() ?: 0.0F
         offsetFromIcon = map["offsetFromIcon"] as? Boolean ?: true
         textOptional = map["textOptional"] as? Boolean ?: false
-      }
-    }
-
-    private fun parseColor(colorString: String): Int? {
-      return try {
-        Color.parseColor(colorString)
-      } catch (e: IllegalArgumentException) {
-        e.printStackTrace()
-        null
       }
     }
   }

@@ -8,14 +8,19 @@ import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.map.MapLoadedListener
 import com.yandex.mapkit.map.MapObject
 import com.yandex.mapkit.map.MapObjectCollection
+import com.yandex.mapkit.map.PolygonMapObject
 import expo.modules.kotlin.AppContext
 import expo.modules.kotlin.views.ExpoView
 import com.yandex.mapkit.mapview.MapView
+import expo.modules.kotlin.viewevent.EventDispatcher
 
 @SuppressLint("ViewConstructor")
 class YandexMapView(context: Context, appContext: AppContext) : ExpoView(context, appContext) {
+  val onMapReady by EventDispatcher()
+
   private var isMapLoaded = false
   private val markerViews = mutableListOf<MarkerView>()
+  private val polygonViews = mutableListOf<PolygonView>()
 
   private val mapLoadedListener = MapLoadedListener {
     isMapLoaded = true
@@ -23,6 +28,12 @@ class YandexMapView(context: Context, appContext: AppContext) : ExpoView(context
     for (markerView in markerViews) {
       markerView.updateMarker()
     }
+
+    for (polygonView in polygonViews) {
+      polygonView.updatePolygon()
+    }
+
+    onMapReady(mapOf("payload" to "success"))
   }
 
   init {
@@ -46,23 +57,31 @@ class YandexMapView(context: Context, appContext: AppContext) : ExpoView(context
       return
     }
 
+    if (!isMapLoaded && child is PolygonView) {
+      polygonViews.add(child)
+
+      return
+    }
+
     if (child is MarkerView) {
-      child.addOnLayoutChangeListener { v, left, top, right, bottom, _, _, _, _ ->
         child.isVisible = false
         child.updateMarker()
-      }
-    } else {
-      // TODO: handle throwing error if !is MarkerView
-      // throw IllegalArgumentException("Child view must be a MarkerView")
+    }
+
+    if (child is PolygonView) {
+      child.updatePolygon()
     }
   }
 
   override fun onViewRemoved(child: View?) {
-    // TODO: handle removing marker
     super.onViewRemoved(child)
 
     if (child is MarkerView) {
       mapObjects?.remove(child.placemark as MapObject)
+    }
+
+    if (child is PolygonView) {
+      mapObjects?.remove(child.polygonMapObject as PolygonMapObject)
     }
   }
 

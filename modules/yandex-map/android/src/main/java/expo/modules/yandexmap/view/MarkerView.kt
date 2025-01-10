@@ -8,11 +8,13 @@ import android.graphics.Canvas
 import android.view.View
 import androidx.core.view.isVisible
 import com.yandex.mapkit.map.IconStyle
+import com.yandex.mapkit.map.MapObjectTapListener
 import com.yandex.mapkit.map.PlacemarkMapObject
 import com.yandex.mapkit.map.TextStyle
 import com.yandex.runtime.image.AnimatedImageProvider
 import com.yandex.runtime.image.ImageProvider
 import expo.modules.kotlin.AppContext
+import expo.modules.kotlin.viewevent.EventDispatcher
 import expo.modules.kotlin.views.ExpoView
 import expo.modules.yandexmap.R
 import expo.modules.yandexmap.model.Coordinate
@@ -27,13 +29,16 @@ import java.net.URL
 
 @SuppressLint("ViewConstructor")
 class MarkerView(context: Context, appContext: AppContext) : ExpoView(context, appContext) {
+  val onPress by EventDispatcher()
+
   private var placemarkConfig: PlacemarkConfig = PlacemarkConfig()
 
-  var placemark: PlacemarkMapObject? = null
-
-  override fun onViewRemoved(child: View?) {
-    super.onViewRemoved(child)
+  private var placemarkTapListener = MapObjectTapListener { _, point ->
+    onPress(mapOf("latitude" to point.latitude, "longitude" to point.longitude))
+    true
   }
+
+  var placemark: PlacemarkMapObject? = null
 
   override fun onViewAdded(view: View?) {
     view?.addOnLayoutChangeListener { v, left, top, right, bottom, _, _, _, _ ->
@@ -63,6 +68,8 @@ class MarkerView(context: Context, appContext: AppContext) : ExpoView(context, a
     } else {
       placemark?.setIcon(placemarkConfig.imageProvider!!, placemarkConfig.iconStyle)
     }
+
+    placemark?.addTapListener(placemarkTapListener)
   }
 
   fun setCoordinate(latLng: Coordinate) {
