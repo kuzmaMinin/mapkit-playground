@@ -9,6 +9,7 @@ import com.yandex.mapkit.map.MapLoadedListener
 import com.yandex.mapkit.map.MapObject
 import com.yandex.mapkit.map.MapObjectCollection
 import com.yandex.mapkit.map.PolygonMapObject
+import com.yandex.mapkit.map.PolylineMapObject
 import expo.modules.kotlin.AppContext
 import expo.modules.kotlin.views.ExpoView
 import com.yandex.mapkit.mapview.MapView
@@ -19,8 +20,10 @@ class YandexMapView(context: Context, appContext: AppContext) : ExpoView(context
   val onMapReady by EventDispatcher()
 
   private var isMapLoaded = false
+
   private val markerViews = mutableListOf<MarkerView>()
   private val polygonViews = mutableListOf<PolygonView>()
+  private val polylineViews = mutableListOf<PolylineView>()
 
   private val mapLoadedListener = MapLoadedListener {
     isMapLoaded = true
@@ -31,6 +34,10 @@ class YandexMapView(context: Context, appContext: AppContext) : ExpoView(context
 
     for (polygonView in polygonViews) {
       polygonView.updatePolygon()
+    }
+
+    for (polylineView in polylineViews) {
+      polylineView.updatePolyline()
     }
 
     onMapReady(mapOf("payload" to "success"))
@@ -63,25 +70,23 @@ class YandexMapView(context: Context, appContext: AppContext) : ExpoView(context
       return
     }
 
-    if (child is MarkerView) {
+    when (child) {
+      is MarkerView -> {
         child.isVisible = false
         child.updateMarker()
-    }
-
-    if (child is PolygonView) {
-      child.updatePolygon()
+      }
+      is PolygonView -> child.updatePolygon()
+      is PolylineView -> child.updatePolyline()
     }
   }
 
   override fun onViewRemoved(child: View?) {
     super.onViewRemoved(child)
 
-    if (child is MarkerView) {
-      mapObjects?.remove(child.placemark as MapObject)
-    }
-
-    if (child is PolygonView) {
-      mapObjects?.remove(child.polygonMapObject as PolygonMapObject)
+    when (child) {
+      is MarkerView -> mapObjects?.remove(child.placemark as MapObject)
+      is PolygonView -> mapObjects?.remove(child.polygonMapObject as PolygonMapObject)
+      is PolylineView -> mapObjects?.remove(child.polylineMapObject as PolylineMapObject)
     }
   }
 
