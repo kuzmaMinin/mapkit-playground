@@ -1,6 +1,5 @@
 package expo.modules.yandexmap.model
 
-import android.graphics.Color
 import android.graphics.PointF
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.IconStyle

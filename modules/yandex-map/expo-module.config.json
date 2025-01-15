@@ -11,9 +11,9 @@
   },
   "android": {
     "modules": [
-      "expo.modules.yandexmap.YandexMapModule",
-      "expo.modules.yandexmap.MarkerModule",
-      "expo.modules.yandexmap.PolygonModule",
+      "expo.modules.yandexmap.modules.YandexMapModule",
+      "expo.modules.yandexmap.modules.MarkerModule",
+      "expo.modules.yandexmap.modules.PolygonModule",
       "expo.modules.yandexmap.modules.PolylineModule",
       "expo.modules.yandexmap.modules.CircleModule"
     ]
