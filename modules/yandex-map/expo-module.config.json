@@ -14,7 +14,8 @@
       "expo.modules.yandexmap.YandexMapModule",
       "expo.modules.yandexmap.MarkerModule",
       "expo.modules.yandexmap.PolygonModule",
-      "expo.modules.yandexmap.modules.PolylineModule"
+      "expo.modules.yandexmap.modules.PolylineModule",
+      "expo.modules.yandexmap.modules.CircleModule"
     ]
   }
 }

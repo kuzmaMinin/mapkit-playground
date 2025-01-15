@@ -1,10 +1,12 @@
 package expo.modules.yandexmap.view
 
+import CircleView
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import androidx.core.view.isVisible
 import com.yandex.mapkit.MapKitFactory
+import com.yandex.mapkit.map.CircleMapObject
 import com.yandex.mapkit.map.MapLoadedListener
 import com.yandex.mapkit.map.MapObject
 import com.yandex.mapkit.map.MapObjectCollection
@@ -24,6 +26,7 @@ class YandexMapView(context: Context, appContext: AppContext) : ExpoView(context
   private val markerViews = mutableListOf<MarkerView>()
   private val polygonViews = mutableListOf<PolygonView>()
   private val polylineViews = mutableListOf<PolylineView>()
+  private val circleViews = mutableListOf<CircleView>()
 
   private val mapLoadedListener = MapLoadedListener {
     isMapLoaded = true
@@ -38,6 +41,10 @@ class YandexMapView(context: Context, appContext: AppContext) : ExpoView(context
 
     for (polylineView in polylineViews) {
       polylineView.updatePolyline()
+    }
+
+    for (circleView in circleViews) {
+      circleView.updateCircle()
     }
 
     onMapReady(mapOf("payload" to "success"))
@@ -58,25 +65,18 @@ class YandexMapView(context: Context, appContext: AppContext) : ExpoView(context
   override fun onViewAdded(child: View?) {
     super.onViewAdded(child)
 
-    if (!isMapLoaded && child is MarkerView) {
-      markerViews.add(child)
-
-      return
-    }
-
-    if (!isMapLoaded && child is PolygonView) {
-      polygonViews.add(child)
-
-      return
-    }
-
-    when (child) {
-      is MarkerView -> {
+    when {
+      !isMapLoaded && child is MarkerView -> markerViews.add(child)
+      !isMapLoaded && child is PolygonView -> polygonViews.add(child)
+      !isMapLoaded && child is PolylineView -> polylineViews.add(child)
+      !isMapLoaded && child is CircleView -> circleViews.add(child)
+      isMapLoaded && child is MarkerView -> {
         child.isVisible = false
         child.updateMarker()
       }
-      is PolygonView -> child.updatePolygon()
-      is PolylineView -> child.updatePolyline()
+      isMapLoaded && child is PolygonView -> child.updatePolygon()
+      isMapLoaded && child is PolylineView -> child.updatePolyline()
+      isMapLoaded && child is CircleView -> child.updateCircle()
     }
   }
 
@@ -87,6 +87,7 @@ class YandexMapView(context: Context, appContext: AppContext) : ExpoView(context
       is MarkerView -> mapObjects?.remove(child.placemark as MapObject)
       is PolygonView -> mapObjects?.remove(child.polygonMapObject as PolygonMapObject)
       is PolylineView -> mapObjects?.remove(child.polylineMapObject as PolylineMapObject)
+      is CircleView -> mapObjects?.remove(child.circleMapObject as CircleMapObject)
     }
   }
 
