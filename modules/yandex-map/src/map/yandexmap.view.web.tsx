@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { YandexMapViewProps } from "./YandexMap.types";
+import { YandexMapViewProps } from "./yandexmap.types";
 
 export default function YandexMapView(props: YandexMapViewProps) {
   return (

@@ -4,7 +4,7 @@ import {
   IconAsset,
   IMarkerViewProps,
   INativeMarkerViewProps,
-} from "./Marker.types";
+} from "./marker.types";
 import { View } from "react-native";
 
 import { Asset } from "expo-asset";
