@@ -78,6 +78,9 @@ export default function HomeScreen() {
     { latitude: 59.938185, longitude: 30.32808, text: "fifth" },
     { latitude: 59.937376, longitude: 30.33621, text: "sixth" },
     { latitude: 59.934517, longitude: 30.335059, text: "seventh" },
+    { latitude: 58.934517, longitude: 30.335059, text: "eighth" },
+    { latitude: 58.934517, longitude: 31.335059, text: "ninth" },
+    { latitude: 58.934517, longitude: 30.335059, text: "tenth" },
   ]);
 
   const [latitude, setLatitude] = useState<string>("44.77777");
@@ -136,8 +139,18 @@ export default function HomeScreen() {
         onMapReady={(event) => {
           console.log("map ready", event.nativeEvent);
         }}
-        // clusterized={true}
-        // clusterIcon={require("../../assets/images/placeholder.png")}
+        clusterized={true}
+        /*        clusterStyle={{
+          fontSize: 14,
+          textColor: "red",
+          padding: 10,
+          backgroundColor: "green",
+          strokeColor: "blue",
+          strokeWidth: 1,
+        }}*/
+        onClusterPress={(e) => {
+          console.log(e.nativeEvent, "on cluster press");
+        }}
       >
         {/*<Marker
           key={"second-3"}

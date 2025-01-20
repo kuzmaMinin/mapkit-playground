@@ -19,6 +19,9 @@ import expo.modules.kotlin.views.ExpoView
 import expo.modules.yandexmap.R
 import expo.modules.yandexmap.model.Coordinate
 import expo.modules.yandexmap.model.PlacemarkConfig
+import expo.modules.yandexmap.view.YandexMapView.Companion.clusterConfig
+import expo.modules.yandexmap.view.YandexMapView.Companion.clusterized
+import expo.modules.yandexmap.view.YandexMapView.Companion.clusterizedCollection
 import expo.modules.yandexmap.view.YandexMapView.Companion.mapObjects
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -53,23 +56,11 @@ class MarkerView(context: Context, appContext: AppContext) : ExpoView(context, a
   }
 
   fun updateMarker() {
-    placemark = mapObjects?.addPlacemark()?.apply {
-      geometry = placemarkConfig.coordinate
-
-      if (placemarkConfig.text != null) {
-        setText(placemarkConfig.text!!, placemarkConfig.textStyle)
-      }
-    }
-
-    if (placemarkConfig.animatedImageProvider != null) {
-      placemark?.useAnimation()?.apply {
-        setIcon(placemarkConfig.animatedImageProvider!!, placemarkConfig.iconStyle)
-      }?.play()
+    if (clusterized) {
+      updateClusterizedMarker()
     } else {
-      placemark?.setIcon(placemarkConfig.imageProvider!!, placemarkConfig.iconStyle)
+      updateUsualMarker()
     }
-
-    placemark?.addTapListener(placemarkTapListener)
   }
 
   fun setCoordinate(latLng: Coordinate) {
@@ -111,6 +102,42 @@ class MarkerView(context: Context, appContext: AppContext) : ExpoView(context, a
       placemarkConfig.iconStyle = style
     }
 
+  }
+
+  private fun updateClusterizedMarker() {
+    placemark = clusterizedCollection?.addPlacemark()?.apply {
+      geometry = placemarkConfig.coordinate
+    }
+
+    if (placemarkConfig.animatedImageProvider != null) {
+      placemark?.useAnimation()?.apply {
+        setIcon(placemarkConfig.animatedImageProvider!!, placemarkConfig.iconStyle)
+      }?.play()
+    } else {
+      placemark?.setIcon(placemarkConfig.imageProvider!!, placemarkConfig.iconStyle)
+    }
+
+    clusterizedCollection?.clusterPlacemarks(clusterConfig.clusterRadius, clusterConfig.minZoom)
+  }
+
+  private fun updateUsualMarker() {
+    placemark = mapObjects?.addPlacemark()?.apply {
+      geometry = placemarkConfig.coordinate
+
+      if (placemarkConfig.text != null) {
+        setText(placemarkConfig.text!!, placemarkConfig.textStyle)
+      }
+    }
+
+    if (placemarkConfig.animatedImageProvider != null) {
+      placemark?.useAnimation()?.apply {
+        setIcon(placemarkConfig.animatedImageProvider!!, placemarkConfig.iconStyle)
+      }?.play()
+    } else {
+      placemark?.setIcon(placemarkConfig.imageProvider!!, placemarkConfig.iconStyle)
+    }
+
+    placemark?.addTapListener(placemarkTapListener)
   }
 
   private suspend fun getImageProviderSuspend(
