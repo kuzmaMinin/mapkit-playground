@@ -20,8 +20,8 @@ import expo.modules.yandexmap.R
 import expo.modules.yandexmap.model.Coordinate
 import expo.modules.yandexmap.model.PlacemarkConfig
 import expo.modules.yandexmap.view.YandexMapView.Companion.clusterConfig
-import expo.modules.yandexmap.view.YandexMapView.Companion.clusterized
 import expo.modules.yandexmap.view.YandexMapView.Companion.clusterizedCollection
+import expo.modules.yandexmap.view.YandexMapView.Companion.mapConfig
 import expo.modules.yandexmap.view.YandexMapView.Companion.mapObjects
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -32,170 +32,170 @@ import java.net.URL
 
 @SuppressLint("ViewConstructor")
 class MarkerView(context: Context, appContext: AppContext) : ExpoView(context, appContext) {
-  val onPress by EventDispatcher()
+    val onPress by EventDispatcher()
+    var placemark: PlacemarkMapObject? = null
 
-  private var placemarkConfig: PlacemarkConfig = PlacemarkConfig()
+    private var placemarkConfig: PlacemarkConfig = PlacemarkConfig()
 
-  private var placemarkTapListener = MapObjectTapListener { _, point ->
-    onPress(mapOf("latitude" to point.latitude, "longitude" to point.longitude))
-    true
-  }
-
-  var placemark: PlacemarkMapObject? = null
-
-  override fun onViewAdded(view: View?) {
-    view?.addOnLayoutChangeListener { v, left, top, right, bottom, _, _, _, _ ->
-      view.isVisible = false
-
-      val bitmap = loadBitmapFromView(v, left, top, right, bottom)
-
-      placemarkConfig.imageProvider = ImageProvider.fromBitmap(bitmap)
+    private var placemarkTapListener = MapObjectTapListener { _, point ->
+        onPress(mapOf("latitude" to point.latitude, "longitude" to point.longitude))
+        true
     }
 
-    super.onViewAdded(view)
-  }
-
-  fun updateMarker() {
-    if (clusterized) {
-      updateClusterizedMarker()
-    } else {
-      updateUsualMarker()
-    }
-  }
-
-  fun setCoordinate(latLng: Coordinate) {
-    placemarkConfig.coordinate = latLng.toPoint()
-  }
-
-  fun setIconSource(iconAsset: String?, animated: Boolean) {
-    if (iconAsset != null && animated) {
-      runBlocking {
-        placemarkConfig.animatedImageProvider = getAnimatedImageProviderSuspend(iconAsset)
-      }
-
-      return
+    private var animatedPlacemarkTapListener = MapObjectTapListener { _, point ->
+        onPress(mapOf("latitude" to point.latitude, "longitude" to point.longitude))
+        true
     }
 
-    if (iconAsset != null) {
-      runBlocking {
-        placemarkConfig.imageProvider = getImageProviderSuspend(iconAsset)
-      }
-    } else {
-      placemarkConfig.imageProvider = ImageProvider.fromResource(context, R.drawable.placemark_icon)
-    }
-  }
+    override fun onViewAdded(view: View?) {
+        view?.addOnLayoutChangeListener { v, left, top, right, bottom, _, _, _, _ ->
+            view.isVisible = false
 
-  fun setTextValue(iconText: String?) {
-    if (iconText != null && iconText != "") {
-      placemarkConfig.text = iconText
-    }
-  }
+            val bitmap = loadBitmapFromView(v, left, top, right, bottom)
 
-  fun setTextStyleValue(style: TextStyle?) {
-    if (style != null) {
-      placemarkConfig.textStyle = style
-    }
-  }
+            placemarkConfig.imageProvider = ImageProvider.fromBitmap(bitmap)
+        }
 
-  fun setIconStyleValue(style: IconStyle?) {
-    if (style != null) {
-      placemarkConfig.iconStyle = style
+        super.onViewAdded(view)
     }
 
-  }
-
-  private fun updateClusterizedMarker() {
-    placemark = clusterizedCollection?.addPlacemark()?.apply {
-      geometry = placemarkConfig.coordinate
+    fun updateMarker() {
+        if (mapConfig.clusterized) {
+            updateClusterizedMarker()
+        } else {
+            updateUsualMarker()
+        }
     }
 
-    if (placemarkConfig.animatedImageProvider != null) {
-      placemark?.useAnimation()?.apply {
-        setIcon(placemarkConfig.animatedImageProvider!!, placemarkConfig.iconStyle)
-      }?.play()
-    } else {
-      placemark?.setIcon(placemarkConfig.imageProvider!!, placemarkConfig.iconStyle)
+    fun setCoordinate(latLng: Coordinate) {
+        placemarkConfig.coordinate = latLng.toPoint()
     }
 
-    clusterizedCollection?.clusterPlacemarks(clusterConfig.clusterRadius, clusterConfig.minZoom)
-  }
+    fun setIconSource(iconAsset: String?, animated: Boolean) {
+        if (iconAsset != null && animated) {
+            runBlocking {
+                placemarkConfig.animatedImageProvider = getAnimatedImageProviderSuspend(iconAsset)
+            }
 
-  private fun updateUsualMarker() {
-    placemark = mapObjects?.addPlacemark()?.apply {
-      geometry = placemarkConfig.coordinate
+            return
+        }
 
-      if (placemarkConfig.text != null) {
-        setText(placemarkConfig.text!!, placemarkConfig.textStyle)
-      }
+        if (iconAsset != null) {
+            runBlocking {
+                placemarkConfig.imageProvider = getImageProviderSuspend(iconAsset)
+            }
+        } else {
+            placemarkConfig.imageProvider =
+                ImageProvider.fromResource(context, R.drawable.placemark_icon)
+        }
     }
 
-    if (placemarkConfig.animatedImageProvider != null) {
-      placemark?.useAnimation()?.apply {
-        setIcon(placemarkConfig.animatedImageProvider!!, placemarkConfig.iconStyle)
-      }?.play()
-    } else {
-      placemark?.setIcon(placemarkConfig.imageProvider!!, placemarkConfig.iconStyle)
+    fun setTextValue(iconText: String) {
+        if (iconText != "") {
+            placemarkConfig.text = iconText
+        }
     }
 
-    placemark?.addTapListener(placemarkTapListener)
-  }
-
-  private suspend fun getImageProviderSuspend(
-    iconPath: String,
-  ): ImageProvider {
-    val bitmap = loadImageFromUriSuspend(iconPath)
-
-    return ImageProvider.fromBitmap(bitmap)
-  }
-
-  private suspend fun getAnimatedImageProviderSuspend(iconPath: String): AnimatedImageProvider {
-    val byteArray = loadByteArrayFromUriSuspend(iconPath)
-
-    return AnimatedImageProvider.fromByteArray(byteArray)
-  }
-
-  private fun loadBitmapFromView(
-    view: View,
-    left: Int,
-    top: Int,
-    right: Int,
-    bottom: Int
-  ): Bitmap {
-    val width = if (right - left <= 0) 100 else right - left
-    val height = if (bottom - top <= 0) 100 else bottom - top
-    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-    val c = Canvas(bitmap)
-
-    view.draw(c)
-
-    return bitmap
-  }
-
-  private suspend fun <T> loadFromUriSuspend(uri: String, processStream: (InputStream) -> T?): T? =
-    withContext(Dispatchers.IO) {
-      try {
-        val url = URL(uri)
-        val connection = url.openConnection() as HttpURLConnection
-        connection.doInput = true
-        connection.connect()
-        val inputStream = connection.inputStream
-
-        processStream(inputStream)
-      } catch (e: Exception) {
-        e.printStackTrace()
-        null
-      }
+    fun setTextStyleValue(style: TextStyle) {
+        placemarkConfig.textStyle = style
     }
 
-  private suspend fun loadImageFromUriSuspend(uri: String): Bitmap? =
-    loadFromUriSuspend(uri) { inputStream ->
-      BitmapFactory.decodeStream(inputStream)
+    fun setIconStyleValue(style: IconStyle) {
+        placemarkConfig.iconStyle = style
     }
 
-  private suspend fun loadByteArrayFromUriSuspend(uri: String): ByteArray? =
-    loadFromUriSuspend(uri) { inputStream ->
-      inputStream.readBytes()
+    private fun updateCommonMarker() {
+        placemark?.geometry = placemarkConfig.coordinate
+        placemark?.addTapListener(placemarkTapListener)
+
+        if (placemarkConfig.text != null) {
+            placemark?.setText(placemarkConfig.text!!, placemarkConfig.textStyle)
+        }
+
+        if (placemarkConfig.animatedImageProvider != null) {
+            placemark?.useAnimation()?.apply {
+                setIcon(placemarkConfig.animatedImageProvider!!, placemarkConfig.iconStyle)
+            }?.play()
+        } else {
+            placemark?.setIcon(placemarkConfig.imageProvider!!, placemarkConfig.iconStyle)
+        }
     }
+
+    private fun updateClusterizedMarker() {
+        placemark = clusterizedCollection?.addPlacemark()
+
+        updateCommonMarker()
+
+        clusterizedCollection?.clusterPlacemarks(clusterConfig.clusterRadius, clusterConfig.minZoom)
+    }
+
+    private fun updateUsualMarker() {
+        placemark = mapObjects?.addPlacemark()
+
+        updateCommonMarker()
+    }
+
+    private suspend fun getImageProviderSuspend(
+        iconPath: String,
+    ): ImageProvider {
+        val bitmap = loadImageFromUriSuspend(iconPath)
+
+        return ImageProvider.fromBitmap(bitmap)
+    }
+
+    private suspend fun getAnimatedImageProviderSuspend(iconPath: String): AnimatedImageProvider {
+        val byteArray = loadByteArrayFromUriSuspend(iconPath)
+
+        return AnimatedImageProvider.fromByteArray(byteArray)
+    }
+
+    private fun loadBitmapFromView(
+        view: View,
+        left: Int,
+        top: Int,
+        right: Int,
+        bottom: Int
+    ): Bitmap {
+        val width = if (right - left <= 0) 100 else right - left
+        val height = if (bottom - top <= 0) 100 else bottom - top
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val c = Canvas(bitmap)
+
+        view.draw(c)
+
+        return bitmap
+    }
+
+    private suspend fun <T> loadFromUriSuspend(
+        uri: String,
+        processStream: (InputStream) -> T?
+    ): T? =
+        withContext(Dispatchers.IO) {
+            try {
+                val url = URL(uri)
+                val connection = url.openConnection() as HttpURLConnection
+                connection.doInput = true
+                connection.connect()
+                val inputStream = connection.inputStream
+
+                processStream(inputStream)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+        }
+
+    private suspend fun loadImageFromUriSuspend(uri: String): Bitmap? =
+        loadFromUriSuspend(uri) { inputStream ->
+            BitmapFactory.decodeStream(inputStream)
+        }
+
+    private suspend fun loadByteArrayFromUriSuspend(uri: String): ByteArray? =
+        loadFromUriSuspend(uri) { inputStream ->
+            inputStream.readBytes()
+        }
 
 }
 
+// TODO: animated icon not works with tap listener
+// TODO: may be it it better use markersCollection

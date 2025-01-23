@@ -11,58 +11,49 @@ import expo.modules.yandexmap.view.YandexMapView.Companion.mapObjects
 
 @SuppressLint("ViewConstructor")
 class CircleView(context: Context, appContext: AppContext) : ExpoView(context, appContext) {
-  var circleMapObject: CircleMapObject? = null
+    var circleMapObject: CircleMapObject? = null
 
-  private var circleConfig: CircleConfig = CircleConfig()
+    private var circleConfig: CircleConfig = CircleConfig()
 
-  fun setCenterValue(center: Coordinate) {
-    circleConfig.center = center.toPoint()
-  }
-
-  fun setRadiusValue(radius: Double?) {
-    if (radius != null) {
-      circleConfig.radius = radius.toFloat()
+    fun setCenterValue(center: Coordinate) {
+        circleConfig.center = center.toPoint()
     }
-  }
 
-  fun setStrokeWidthValue(width: Double?) {
-    if (width != null) {
-      circleConfig.strokeWidth = width.toFloat()
+    fun setRadiusValue(radius: Float) {
+        circleConfig.radius = radius
     }
-  }
 
-  fun setStrokeColorValue(color: String?) {
-    if (color != null) {
-      circleConfig.strokeColor = ColorUtils.parseColor(color)
+    fun setStrokeWidthValue(width: Float) {
+        circleConfig.strokeWidth = width
     }
-  }
 
-  fun setFillColorValue(color: String?) {
-    if (color != null) {
-      circleConfig.fillColor = ColorUtils.parseColor(color)
+    fun setStrokeColorValue(color: String) {
+        circleConfig.strokeColor = ColorUtils.parseColor(color)
     }
-  }
 
-  fun updateCircle() {
-    if (circleConfig.center != null) {
-      val circle = Circle(
-        circleConfig.center!!,
-        circleConfig.radius!!
-      )
+    fun setFillColorValue(color: String) {
+        circleConfig.fillColor = ColorUtils.parseColor(color)
+    }
 
-      circleMapObject = mapObjects?.addCircle(circle)?.apply {
-        if (circleConfig.strokeWidth != null) {
-          strokeWidth = circleConfig.strokeWidth!!
+    fun updateCircle() {
+        val circle = Circle(
+            circleConfig.center!!,
+            circleConfig.radius!!
+        )
+
+        circleMapObject = mapObjects?.addCircle(circle)?.apply {
+            if (circleConfig.strokeWidth != null) {
+                strokeWidth = circleConfig.strokeWidth!!
+            }
+
+            if (circleConfig.strokeColor != null) {
+                strokeColor = circleConfig.strokeColor!!
+            }
+
+            if (circleConfig.fillColor != null) {
+                fillColor = circleConfig.fillColor!!
+            }
         }
 
-        if (circleConfig.strokeColor != null) {
-          strokeColor = circleConfig.strokeColor!!
-        }
-
-        if (circleConfig.fillColor != null) {
-          fillColor = circleConfig.fillColor!!
-        }
-      }
     }
-  }
 }

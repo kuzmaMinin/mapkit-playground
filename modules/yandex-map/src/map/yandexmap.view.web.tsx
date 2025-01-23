@@ -1,8 +1,8 @@
 import * as React from "react";
 
-import { YandexMapViewProps } from "./yandexmap.types";
+import { MapKitProps } from "./yandexmap.types";
 
-export default function YandexMapView(props: YandexMapViewProps) {
+export default function YandexMapView(props: MapKitProps) {
   return (
     <div>
       <iframe style={{ flex: 1 }} />

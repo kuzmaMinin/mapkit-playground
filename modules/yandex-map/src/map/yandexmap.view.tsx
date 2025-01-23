@@ -1,11 +1,42 @@
 import { requireNativeView } from "expo";
 import * as React from "react";
 
-import { YandexMapViewProps } from "./yandexmap.types";
+import { MapKitNativeProps, MapKitProps } from "./yandexmap.types";
+import { ComponentType } from "react";
 
-const NativeView: React.ComponentType<YandexMapViewProps> =
+const NativeView: ComponentType<MapKitNativeProps> =
   requireNativeView("YandexMap");
 
-export default function YandexMapView(props: YandexMapViewProps) {
-  return <NativeView {...props} />;
+export default function YandexMapView({
+  children,
+  style,
+  onMapReady,
+  clusterized,
+  clusterStyle,
+  clusterConfig,
+  onClusterPress,
+  initialRegion,
+  mapRef,
+  zoomEnabled = true,
+  tiltEnabled = true,
+  rotationEnabled = true,
+  scrollEnabled = true,
+}: MapKitProps) {
+  return (
+    <NativeView
+      children={children}
+      style={style}
+      onMapReady={onMapReady}
+      clusterized={clusterized}
+      clusterStyle={clusterStyle}
+      clusterConfig={clusterConfig}
+      onClusterPress={onClusterPress}
+      initialRegion={initialRegion}
+      ref={mapRef}
+      zoomEnabled={zoomEnabled}
+      tiltEnabled={tiltEnabled}
+      rotationEnabled={rotationEnabled}
+      scrollEnabled={scrollEnabled}
+    />
+  );
 }

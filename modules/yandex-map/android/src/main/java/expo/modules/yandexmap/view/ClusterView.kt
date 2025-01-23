@@ -8,6 +8,8 @@ import androidx.core.view.setPadding
 import expo.modules.kotlin.AppContext
 import expo.modules.kotlin.views.ExpoView
 import expo.modules.yandexmap.R
+import expo.modules.yandexmap.model.DEFAULT_CLUSTER_STROKE_COLOR
+import expo.modules.yandexmap.model.DEFAULT_CLUSTER_STROKE_WIDTH
 import expo.modules.yandexmap.utils.ColorUtils
 import expo.modules.yandexmap.utils.DimensionUtils
 
@@ -54,8 +56,9 @@ class ClusterView(context: Context, appContext: AppContext) : ExpoView(context, 
     }
 
     fun setStroke(width: Float?, color: Int?) {
-        val strokeWidth = DimensionUtils.fromDpToPxInt(width?.toInt() ?: 2, scale)
-        val strokeColor = color ?: ColorUtils.parseColor("#2196F3")!!
+        val strokeWidth =
+            DimensionUtils.fromDpToPxInt(width?.toInt() ?: DEFAULT_CLUSTER_STROKE_WIDTH, scale)
+        val strokeColor = color ?: ColorUtils.parseColor(DEFAULT_CLUSTER_STROKE_COLOR)!!
 
         backgroundDrawable.setStroke(strokeWidth, strokeColor)
     }

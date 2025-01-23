@@ -6,29 +6,29 @@ import expo.modules.yandexmap.model.Coordinate
 import expo.modules.yandexmap.view.PolygonView
 
 class PolygonModule : Module() {
-  override fun definition() = ModuleDefinition {
-    Name("Polygon")
+    override fun definition() = ModuleDefinition {
+        Name("Polygon")
 
-    View(PolygonView::class) {
-      Prop("points") { view: PolygonView, points: List<Coordinate> ->
-        view.setPointsValue(points)
-      }
+        View(PolygonView::class) {
+            Prop("points") { view: PolygonView, points: List<Coordinate> ->
+                view.setPointsValue(points)
+            }
 
-      Prop("innerPoints") { view: PolygonView, points: List<Coordinate>? ->
-        view.setInnerPointsValue(points)
-      }
+            Prop("innerPoints") { view: PolygonView, points: List<Coordinate> ->
+                view.setInnerPointsValue(points)
+            }
 
-      Prop("strokeColor") { view: PolygonView, color: String? ->
-        view.setStrokeColorValue(color)
-      }
+            Prop("strokeColor") { view: PolygonView, color: String ->
+                view.setStrokeColorValue(color)
+            }
 
-      Prop("fillColor") { view: PolygonView, color: String? ->
-        view.setFillColorValue(color)
-      }
+            Prop("fillColor") { view: PolygonView, color: String ->
+                view.setFillColorValue(color)
+            }
 
-      Prop("strokeWidth") { view: PolygonView, width: Double? ->
-        view.setStrokeWidthValue(width)
-      }
+            Prop("strokeWidth") { view: PolygonView, width: Float ->
+                view.setStrokeWidthValue(width)
+            }
+        }
     }
-  }
 }

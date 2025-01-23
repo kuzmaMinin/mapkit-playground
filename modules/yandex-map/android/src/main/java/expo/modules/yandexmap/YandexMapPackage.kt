@@ -21,11 +21,13 @@ class YandexMapPackage : Package {
                 super.onCreate(application)
 
                 try {
-                    val applicationInfo = context.packageManager?.getApplicationInfo(context.packageName, 128)
+                    val applicationInfo =
+                        context.packageManager?.getApplicationInfo(context.packageName, 128)
                     val apiKey = applicationInfo?.metaData?.getString(MAPKIT_API_KEY)
-
+                    // TODO: move text to resource
                     apiKey?.let {
                         MapKitFactory.setApiKey(it)
+                        // TODO: move text to resource
                     } ?: Log.v(INFO_TAG, "API Key not found in AndroidManifest.")
                 } catch (e: Exception) {
                     Log.e(ERROR_TAG, "Error in OnCreate ApplicationLifecycleListener ${e.message}.")
@@ -35,14 +37,18 @@ class YandexMapPackage : Package {
     }
 
     override fun createReactActivityLifecycleListeners(activityContext: Context): List<ReactActivityLifecycleListener> {
-        return listOf(object: ReactActivityLifecycleListener {
+        return listOf(object : ReactActivityLifecycleListener {
             override fun onCreate(activity: Activity, savedInstanceState: Bundle?) {
                 super.onCreate(activity, savedInstanceState)
 
                 try {
                     MapKitFactory.initialize(activityContext)
                 } catch (e: Exception) {
-                    Log.e(ERROR_TAG, "Error in OnCreate ReactActivityLifecycleListener ${e.message}.")
+                    Log.e(
+                        ERROR_TAG,
+                        "Error in OnCreate ReactActivityLifecycleListener ${e.message}."
+                    )
+                    // TODO: move text to resource
                 }
             }
 

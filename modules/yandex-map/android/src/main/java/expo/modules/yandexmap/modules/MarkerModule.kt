@@ -3,43 +3,37 @@ package expo.modules.yandexmap.modules
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 import expo.modules.yandexmap.model.Coordinate
-import expo.modules.yandexmap.model.MarkerIconStyle
-import expo.modules.yandexmap.model.MarkerTextStyle
+import expo.modules.yandexmap.model.IconRecord
+import expo.modules.yandexmap.model.MarkerIconStyleModel
+import expo.modules.yandexmap.model.MarkerTextStyleModel
 import expo.modules.yandexmap.view.MarkerView
 
 class MarkerModule : Module() {
-  override fun definition() = ModuleDefinition {
-    Name("Marker")
+    override fun definition() = ModuleDefinition {
+        Name("Marker")
 
-    View(MarkerView::class) {
-      Prop("coordinate") { view: MarkerView, coordinate: Coordinate ->
-        view.setCoordinate(coordinate)
-      }
+        View(MarkerView::class) {
+            Prop("coordinate") { view: MarkerView, coordinate: Coordinate ->
+                view.setCoordinate(coordinate)
+            }
 
-      Prop("text") { view: MarkerView, text: String? ->
-        view.setTextValue(text)
-      }
+            Prop("text") { view: MarkerView, text: String ->
+                view.setTextValue(text)
+            }
 
-      Prop("textStyle") { view: MarkerView, map: Map<String, Any?> ->
-        val style = MarkerTextStyle.fromMap(map)
+            Prop("textStyle") { view: MarkerView, style: MarkerTextStyleModel ->
+                view.setTextStyleValue(style.toMarkerStyleData())
+            }
 
-        view.setTextStyleValue(style)
-      }
+            Prop("iconData") { view: MarkerView, iconRecord: IconRecord ->
+                view.setIconSource(iconRecord.icon, iconRecord.animated)
+            }
 
-      Prop("iconData") { view: MarkerView, map: Map<String, Any?> ->
-        val icon = map["icon"] as? String?
-        val animated = map["animated"] as? Boolean ?: false
+            Prop("iconStyle") { view: MarkerView, style: MarkerIconStyleModel ->
+                view.setIconStyleValue(style.toIconStyle())
+            }
 
-        view.setIconSource(icon, animated)
-      }
-
-      Prop("iconStyle") { view: MarkerView, map: Map<String, Any?> ->
-        val style = MarkerIconStyle.fromMap(map)
-
-        view.setIconStyleValue(style)
-      }
-
-      Events("onPress")
+            Events("onPress")
+        }
     }
-  }
 }
