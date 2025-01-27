@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "kit",
-    "slug": "kit",
+    "name": "mapkit",
+    "slug": "mapkit",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -16,7 +16,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.porttranzitdev.kit"
+      "package": "com.kuzmaminin.kit"
     },
     "web": {
       "bundler": "metro",
@@ -34,7 +34,13 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      ["./mapkit.plugin.js", { "apiKey": "6a9830c3-bc76-4774-8c73-120562df9a6e" }]
+      [
+        "./mapkit.plugin.js",
+        {
+          "apiKey": "6a9830c3-bc76-4774-8c73-120562df9a6e"
+        }
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true

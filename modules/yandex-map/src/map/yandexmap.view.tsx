@@ -17,6 +17,8 @@ export default function YandexMapView({
   onClusterPress,
   initialRegion,
   mapRef,
+  onMapTap,
+  onMapLongTap,
   zoomEnabled = true,
   tiltEnabled = true,
   rotationEnabled = true,
@@ -37,6 +39,8 @@ export default function YandexMapView({
       tiltEnabled={tiltEnabled}
       rotationEnabled={rotationEnabled}
       scrollEnabled={scrollEnabled}
+      onMapTap={onMapTap}
+      onMapLongTap={onMapLongTap}
     />
   );
 }

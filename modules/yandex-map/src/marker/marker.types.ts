@@ -54,8 +54,6 @@ interface IBaseMarkerProps {
   coordinate: ICoordinate;
   children?: ReactNode;
   style?: StyleProp<ViewStyle>;
-  text?: string;
-  textStyle?: TextStyle;
   iconStyle?: IIconStyle;
   onPress?: (event: SyntheticEvent<any, ICoordinate>) => void;
 }
@@ -69,12 +67,6 @@ export type IconAsset =
       width: number;
     };
 
-export interface IMarkerViewProps extends IBaseMarkerProps {
-  icon?: IconAsset;
-  animated?: boolean;
-}
+export interface IMarkerViewProps extends IBaseMarkerProps {}
 
-export interface INativeMarkerViewProps extends IBaseMarkerProps {
-  iconSource?: IconAsset;
-  iconData?: { icon?: string | null; animated?: boolean };
-}
+export interface INativeMarkerViewProps extends IBaseMarkerProps {}

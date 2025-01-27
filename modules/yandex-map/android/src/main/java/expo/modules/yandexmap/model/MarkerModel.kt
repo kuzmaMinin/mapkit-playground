@@ -5,12 +5,9 @@ import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.IconStyle
 import com.yandex.mapkit.map.Rect
 import com.yandex.mapkit.map.RotationType
-import com.yandex.mapkit.map.TextStyle
-import com.yandex.runtime.image.AnimatedImageProvider
 import com.yandex.runtime.image.ImageProvider
 import expo.modules.kotlin.records.Field
 import expo.modules.kotlin.records.Record
-import expo.modules.yandexmap.utils.ColorUtils
 
 class Coordinate : Record {
     @Field
@@ -21,51 +18,6 @@ class Coordinate : Record {
 
     fun toPoint(): Point {
         return Point(latitude, longitude)
-    }
-}
-
-class MarkerTextStyleModel : Record {
-    @Field
-    val size: Float? = null
-
-    @Field
-    val color: String? = null
-
-    @Field
-    val outlineWidth: Float? = null
-
-    @Field
-    val outlineColor: String? = null
-
-    @Field
-    val placement: Int? = null
-
-    @Field
-    val offset: Float? = null
-
-    @Field
-    val offsetFromIcon: Boolean? = null
-
-    @Field
-    val textOptional: Boolean? = null
-
-    fun toMarkerStyleData(): TextStyle {
-        val colorInt = color?.let { ColorUtils.parseColor(it) }
-        val outlineColorInt = outlineColor?.let { ColorUtils.parseColor(it) }
-        val placementTyped =
-            placement?.let { TextStyle.Placement.entries[it] }
-                ?: TextStyle.Placement.CENTER
-
-        return TextStyle(
-            size ?: MARKER_DEFAULT_TEXT_SIZE,
-            colorInt,
-            outlineWidth ?: MARKER_DEFAULT_OUTLINE_WIDTH,
-            outlineColorInt,
-            placementTyped,
-            offset ?: MARKER_DEFAULT_OFFSET,
-            offsetFromIcon ?: true,
-            textOptional ?: false
-        )
     }
 }
 
@@ -130,20 +82,9 @@ class RectRecord : Record {
     }
 }
 
-class IconRecord : Record {
-    @Field
-    val icon: String? = null
-
-    @Field
-    val animated: Boolean = false
-}
-
 data class PlacemarkConfig(
     var coordinate: Point = Point(0.0, 0.0),
-    var text: String? = null,
-    var textStyle: TextStyle = TextStyle(),
     var iconStyle: IconStyle = IconStyle(),
     var imageProvider: ImageProvider? = null,
-    var animatedImageProvider: AnimatedImageProvider? = null
 )
 

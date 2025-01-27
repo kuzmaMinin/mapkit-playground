@@ -3,28 +3,24 @@ package expo.modules.yandexmap.view
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.view.View
 import androidx.core.view.isVisible
 import com.yandex.mapkit.map.IconStyle
 import com.yandex.mapkit.map.MapObjectTapListener
 import com.yandex.mapkit.map.PlacemarkMapObject
-import com.yandex.mapkit.map.TextStyle
-import com.yandex.runtime.image.AnimatedImageProvider
 import com.yandex.runtime.image.ImageProvider
 import expo.modules.kotlin.AppContext
 import expo.modules.kotlin.viewevent.EventDispatcher
 import expo.modules.kotlin.views.ExpoView
-import expo.modules.yandexmap.R
 import expo.modules.yandexmap.model.Coordinate
 import expo.modules.yandexmap.model.PlacemarkConfig
 import expo.modules.yandexmap.view.YandexMapView.Companion.clusterConfig
 import expo.modules.yandexmap.view.YandexMapView.Companion.clusterizedCollection
+import expo.modules.yandexmap.view.YandexMapView.Companion.isMapLoaded
 import expo.modules.yandexmap.view.YandexMapView.Companion.mapConfig
-import expo.modules.yandexmap.view.YandexMapView.Companion.mapObjects
+import expo.modules.yandexmap.view.YandexMapView.Companion.markersCollection
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.InputStream
 import java.net.HttpURLConnection
@@ -42,11 +38,6 @@ class MarkerView(context: Context, appContext: AppContext) : ExpoView(context, a
         true
     }
 
-    private var animatedPlacemarkTapListener = MapObjectTapListener { _, point ->
-        onPress(mapOf("latitude" to point.latitude, "longitude" to point.longitude))
-        true
-    }
-
     override fun onViewAdded(view: View?) {
         view?.addOnLayoutChangeListener { v, left, top, right, bottom, _, _, _, _ ->
             view.isVisible = false
@@ -54,6 +45,10 @@ class MarkerView(context: Context, appContext: AppContext) : ExpoView(context, a
             val bitmap = loadBitmapFromView(v, left, top, right, bottom)
 
             placemarkConfig.imageProvider = ImageProvider.fromBitmap(bitmap)
+
+            if (isMapLoaded) {
+                placemark?.setIcon(placemarkConfig.imageProvider!!, placemarkConfig.iconStyle)
+            }
         }
 
         super.onViewAdded(view)
@@ -71,35 +66,6 @@ class MarkerView(context: Context, appContext: AppContext) : ExpoView(context, a
         placemarkConfig.coordinate = latLng.toPoint()
     }
 
-    fun setIconSource(iconAsset: String?, animated: Boolean) {
-        if (iconAsset != null && animated) {
-            runBlocking {
-                placemarkConfig.animatedImageProvider = getAnimatedImageProviderSuspend(iconAsset)
-            }
-
-            return
-        }
-
-        if (iconAsset != null) {
-            runBlocking {
-                placemarkConfig.imageProvider = getImageProviderSuspend(iconAsset)
-            }
-        } else {
-            placemarkConfig.imageProvider =
-                ImageProvider.fromResource(context, R.drawable.placemark_icon)
-        }
-    }
-
-    fun setTextValue(iconText: String) {
-        if (iconText != "") {
-            placemarkConfig.text = iconText
-        }
-    }
-
-    fun setTextStyleValue(style: TextStyle) {
-        placemarkConfig.textStyle = style
-    }
-
     fun setIconStyleValue(style: IconStyle) {
         placemarkConfig.iconStyle = style
     }
@@ -108,16 +74,11 @@ class MarkerView(context: Context, appContext: AppContext) : ExpoView(context, a
         placemark?.geometry = placemarkConfig.coordinate
         placemark?.addTapListener(placemarkTapListener)
 
-        if (placemarkConfig.text != null) {
-            placemark?.setText(placemarkConfig.text!!, placemarkConfig.textStyle)
-        }
-
-        if (placemarkConfig.animatedImageProvider != null) {
-            placemark?.useAnimation()?.apply {
-                setIcon(placemarkConfig.animatedImageProvider!!, placemarkConfig.iconStyle)
-            }?.play()
-        } else {
-            placemark?.setIcon(placemarkConfig.imageProvider!!, placemarkConfig.iconStyle)
+        if (placemarkConfig.imageProvider != null) {
+            placemark?.setIcon(
+                placemarkConfig.imageProvider!!,
+                placemarkConfig.iconStyle
+            )
         }
     }
 
@@ -130,23 +91,9 @@ class MarkerView(context: Context, appContext: AppContext) : ExpoView(context, a
     }
 
     private fun updateUsualMarker() {
-        placemark = mapObjects?.addPlacemark()
+        placemark = markersCollection?.addPlacemark()
 
         updateCommonMarker()
-    }
-
-    private suspend fun getImageProviderSuspend(
-        iconPath: String,
-    ): ImageProvider {
-        val bitmap = loadImageFromUriSuspend(iconPath)
-
-        return ImageProvider.fromBitmap(bitmap)
-    }
-
-    private suspend fun getAnimatedImageProviderSuspend(iconPath: String): AnimatedImageProvider {
-        val byteArray = loadByteArrayFromUriSuspend(iconPath)
-
-        return AnimatedImageProvider.fromByteArray(byteArray)
     }
 
     private fun loadBitmapFromView(
@@ -184,18 +131,5 @@ class MarkerView(context: Context, appContext: AppContext) : ExpoView(context, a
                 null
             }
         }
-
-    private suspend fun loadImageFromUriSuspend(uri: String): Bitmap? =
-        loadFromUriSuspend(uri) { inputStream ->
-            BitmapFactory.decodeStream(inputStream)
-        }
-
-    private suspend fun loadByteArrayFromUriSuspend(uri: String): ByteArray? =
-        loadFromUriSuspend(uri) { inputStream ->
-            inputStream.readBytes()
-        }
-
 }
 
-// TODO: animated icon not works with tap listener
-// TODO: may be it it better use markersCollection

@@ -13,7 +13,7 @@ class YandexMapModule : Module() {
         Name("YandexMap")
 
         View(YandexMapView::class) {
-            Events("onMapReady", "onClusterPress")
+            Events("onMapReady", "onClusterPress", "onMapTap", "onMapLongTap")
 
             Prop("clusterized") { view: YandexMapView, clusterized: Boolean ->
                 view.setClusterizedValue(clusterized)
@@ -56,7 +56,7 @@ class YandexMapModule : Module() {
                 view.setFocusRect(tlX, tlY, brX, brY)
             }
 
-            AsyncFunction("move") { view: YandexMapView, position: Position ->
+            AsyncFunction("moveToCenter") { view: YandexMapView, position: Position ->
                 view.moveCamera(position)
             }
 

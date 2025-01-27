@@ -4,7 +4,6 @@ import CircleView
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
-import androidx.core.view.isVisible
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.ScreenPoint
@@ -44,8 +43,8 @@ import expo.modules.yandexmap.model.Position
 class YandexMapView(context: Context, appContext: AppContext) : ExpoView(context, appContext) {
     val onMapReady by EventDispatcher()
     val onClusterPress by EventDispatcher()
-
-    private var isMapLoaded = false
+    val onMapTap by EventDispatcher()
+    val onMapLongTap by EventDispatcher()
 
     private val markerViews = mutableListOf<MarkerView>()
     private val polygonViews = mutableListOf<PolygonView>()
@@ -60,11 +59,7 @@ class YandexMapView(context: Context, appContext: AppContext) : ExpoView(context
             !isMapLoaded && child is PolygonView -> polygonViews.add(child)
             !isMapLoaded && child is PolylineView -> polylineViews.add(child)
             !isMapLoaded && child is CircleView -> circleViews.add(child)
-            isMapLoaded && child is MarkerView -> {
-                child.isVisible = false
-                child.updateMarker()
-            }
-
+            isMapLoaded && child is MarkerView -> child.updateMarker()
             isMapLoaded && child is PolygonView -> child.updatePolygon()
             isMapLoaded && child is PolylineView -> child.updatePolyline()
             isMapLoaded && child is CircleView -> child.updateCircle()
@@ -84,7 +79,7 @@ class YandexMapView(context: Context, appContext: AppContext) : ExpoView(context
                         clusterConfig.minZoom
                     )
                 } else {
-                    mapObjects?.remove(child.placemark as MapObject)
+                    markersCollection?.remove(child.placemark as MapObject)
                 }
             }
 
@@ -225,11 +220,11 @@ class YandexMapView(context: Context, appContext: AppContext) : ExpoView(context
 
     private val inputListener = object : InputListener {
         override fun onMapTap(map: Map, point: Point) {
-            // TODO: Handle single tap ...
+            onMapTap(mapOf("latitude" to point.latitude, "longitude" to point.longitude))
         }
 
         override fun onMapLongTap(map: Map, point: Point) {
-            // TODO: Handle long tap ...
+            onMapLongTap(mapOf("latitude" to point.latitude, "longitude" to point.longitude))
         }
     }
 
@@ -287,6 +282,8 @@ class YandexMapView(context: Context, appContext: AppContext) : ExpoView(context
 
         clusterizedCollection = mapObjects?.addClusterizedPlacemarkCollection(clusterListener)
 
+        markersCollection = mapObjects?.addCollection()
+
         addView(mapView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
         map?.setMapLoadedListener(mapLoadedListener)
@@ -302,8 +299,12 @@ class YandexMapView(context: Context, appContext: AppContext) : ExpoView(context
 
         var clusterizedCollection: ClusterizedPlacemarkCollection? = null
 
+        var markersCollection: MapObjectCollection? = null
+
         var clusterConfig = ClusterConfig()
 
         var mapConfig = MapConfig()
+
+        var isMapLoaded = false
     }
 }

@@ -11,7 +11,7 @@ export interface IMoveParams {
 }
 
 export interface MapKitActions {
-  move: (params: IMoveParams) => void;
+  moveToCenter: (params: IMoveParams) => void;
   fitMarkers: (points: ICoordinate[]) => void;
 }
 
@@ -19,6 +19,8 @@ export interface MapKitBaseProps {
   children?: ReactNode;
   style?: StyleProp<ViewStyle>;
   onMapReady?: (event: SyntheticEvent<any, { payload: "success" }>) => void;
+  onMapTap?: (event: SyntheticEvent<any, ICoordinate>) => void;
+  onMapLongTap?: (event: SyntheticEvent<any, ICoordinate>) => void;
   clusterized?: boolean;
   clusterStyle?: {
     fontSize?: number;
