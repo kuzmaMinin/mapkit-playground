@@ -22,16 +22,18 @@ New Architecture is fully supported!
 
 3. In **app.json** add these lines and provide actual mapkit api key
 
-```
- "plugins": [
-   ...,
-   [
-     "./mapkit.plugin.js",
-     {
-       "apiKey": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
-     }
-   ]
- ],
+```json
+{
+  "plugins": [
+    "...",
+    [
+      "./mapkit.plugin.js",
+      {
+        "apiKey": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+      }
+    ]
+  ]
+}
 ```
 
 4. Make a prebuild
@@ -117,14 +119,14 @@ into [Yandex MapKit](https://yandex.ru/dev/mapkit/doc) .
 
 #### IClusterStyle
 
-| Property name     | Type                                              | Description              |
-|-------------------|---------------------------------------------------|--------------------------|
-| `fontSize`        | *(optional)* **number**                           | Cluster font size        |
-| `padding`         | *(optional)* **number**                           | Cluster padding          |
-| `textColor`       | *(optional)* **string** (f.e. 'red' or '#FFFGGG') | Cluster text color       |
-| `backgroundColor` | *(optional)* **string** (f.e. 'red' or '#FFFGGG') | Cluster background color |
-| `strokeColor`     | *(optional)* **string** (f.e. 'red' or '#FFFGGG') | Cluster stroke color     |
-| `strokeWidth`     | *(optional)* **number**                           | Cluster stroke width     |
+| Property name     | Type                                        | Description              |
+|-------------------|---------------------------------------------|--------------------------|
+| `fontSize`        | *(optional)* **number**                     | Cluster font size        |
+| `padding`         | *(optional)* **number**                     | Cluster padding          |
+| `textColor`       | *(optional)* **string** (f.e. 'red' or HEX) | Cluster text color       |
+| `backgroundColor` | *(optional)* **string** (f.e. 'red' or HEX) | Cluster background color |
+| `strokeColor`     | *(optional)* **string** (f.e. 'red' or HEX) | Cluster stroke color     |
+| `strokeWidth`     | *(optional)* **number**                     | Cluster stroke width     |
 
 #### IClusterConfig
 
@@ -189,24 +191,34 @@ into [Yandex MapKit](https://yandex.ru/dev/mapkit/doc) .
 
 #### Props
 
-| Property name | Type                                              | Description               |
-|---------------|---------------------------------------------------|---------------------------|
-| `points`      | *(required)* **ICoordinate[] **                   | Polygon points            |
-| `innerPoints` | *(optional)* **ICoordinate[]**                    | Polygon points to exclude |
-| `strokeWidth` | *(optional)* **number**                           | Polygon stroke width      |
-| `strokeColor` | *(optional)* **string** (f.e. 'red' or '#FFFGGG') | Polygon stroke color      |
-| `fillColor`   | *(optional)* **string** (f.e. 'red' or '#FFFGGG') | Polygon fill color        |
+| Property name | Type                                          | Description               |
+|---------------|-----------------------------------------------|---------------------------|
+| `points`      | *(required)* **ICoordinate[] **               | Polygon points            |
+| `innerPoints` | *(optional)* **ICoordinate[]**                | Polygon points to exclude |
+| `strokeWidth` | *(optional)* **number**                       | Polygon stroke width      |
+| `strokeColor` | *(optional)* **string** (f.e. 'red' or HEX)   | Polygon stroke color      |
+| `fillColor`   | *(optional)* **string** (f.e. 'red' or HEX)   | Polygon fill color        |
 
 ### Polyline
 
 #### Props
 
-| Property name  | Type                                              | Description            |
-|----------------|---------------------------------------------------|------------------------|
-| `points`       | *(required)* **ICoordinate[]**                    | Polyline points        |
-| `strokeWidth`  | *(optional)* **number**                           | Polyline stroke width  |
-| `outlineWidth` | *(optional)* **number**                           | Polyline outline width |
-| `strokeColor`  | *(optional)* **string** (f.e. 'red' or '#FFFGGG') | Polyline stroke color  |
-| `outlineColor` | *(optional)* **string** (f.e. 'red' or '#FFFGGG') | Polyline outline color |
+| Property name  | Type                                          | Description            |
+|----------------|-----------------------------------------------|------------------------|
+| `points`       | *(required)* **ICoordinate[]**                | Polyline points        |
+| `strokeWidth`  | *(optional)* **number**                       | Polyline stroke width  |
+| `outlineWidth` | *(optional)* **number**                       | Polyline outline width |
+| `strokeColor`  | *(optional)* **string** (f.e. 'red' or HEX)   | Polyline stroke color  |
+| `outlineColor` | *(optional)* **string** (f.e. 'red' or HEX)   | Polyline outline color |
 
 ### Circle
+
+#### Props
+
+| Property name | Type                                          | Description            |
+|---------------|-----------------------------------------------|------------------------|
+| `center`      | *(required)* **ICoordinate**                  | Circle center position |
+| `radius`      | *(required)* **number**                       | Circle radius          |
+| `strokeWidth` | *(optional)* **number**                       | Circle stroke width    |
+| `strokeColor` | *(optional)* **string** (f.e. 'red' or HEX)   | Circle stroke color    |
+| `fillColor`   | *(optional)* **string** (f.e. 'red' or HEX)   | Circle fill color      |
