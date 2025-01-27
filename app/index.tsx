@@ -12,10 +12,10 @@ interface IMark {
 
 export default function MapScreen() {
   const [markers, setMarkers] = useState<IMark[]>([
-    { latitude: 59.936046, longitude: 30.326869, id: "fourth" },
-    { latitude: 59.938185, longitude: 30.32808, id: "fifth" },
-    { latitude: 59.937376, longitude: 30.33621, id: "sixth" },
-    { latitude: 59.934517, longitude: 30.335059, id: "seventh" },
+    { latitude: 59.936046, longitude: 30.326869, id: "1" },
+    { latitude: 59.938185, longitude: 30.32808, id: "2" },
+    { latitude: 59.937376, longitude: 30.33621, id: "3" },
+    { latitude: 59.934517, longitude: 30.335059, id: "4" },
   ]);
 
   const [isLoaded, setIsLoaded] = useState(false);

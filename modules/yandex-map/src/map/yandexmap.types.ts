@@ -2,17 +2,31 @@ import type { StyleProp, ViewStyle } from "react-native";
 import { ReactNode, SyntheticEvent, Ref } from "react";
 import { ICoordinate } from "@/modules/yandex-map";
 
-export interface IMoveParams {
+export interface IClusterStyle {
+  fontSize?: number;
+  padding?: number;
+  textColor?: string;
+  backgroundColor?: string;
+  strokeWidth?: number;
+  strokeColor?: string;
+}
+
+export interface IClusterConfig {
+  clusterRadius?: number;
+  minZoom?: number;
+}
+
+export interface MapKitActions {
+  moveToCenter: (params: IRegion) => void;
+  fitMarkers: (points: ICoordinate[]) => void;
+}
+
+export interface IRegion {
   latitude: number;
   longitude: number;
   zoom?: number;
   azimuth?: number;
   tilt?: number;
-}
-
-export interface MapKitActions {
-  moveToCenter: (params: IMoveParams) => void;
-  fitMarkers: (points: ICoordinate[]) => void;
 }
 
 export interface MapKitBaseProps {
@@ -22,26 +36,10 @@ export interface MapKitBaseProps {
   onMapTap?: (event: SyntheticEvent<any, ICoordinate>) => void;
   onMapLongTap?: (event: SyntheticEvent<any, ICoordinate>) => void;
   clusterized?: boolean;
-  clusterStyle?: {
-    fontSize?: number;
-    padding?: number;
-    textColor?: string;
-    backgroundColor?: string;
-    strokeWidth?: number;
-    strokeColor?: string;
-  };
-  clusterConfig?: {
-    clusterRadius?: number;
-    minZoom?: number;
-  };
+  clusterStyle?: IClusterStyle;
+  clusterConfig?: IClusterConfig;
   onClusterPress?: (event: SyntheticEvent<any, { size: number }>) => void;
-  initialRegion?: {
-    latitude: number;
-    longitude: number;
-    zoom?: number;
-    azimuth?: number;
-    tilt?: number;
-  };
+  initialRegion?: IRegion;
   scrollEnabled?: boolean;
   zoomEnabled?: boolean;
   rotationEnabled?: boolean;

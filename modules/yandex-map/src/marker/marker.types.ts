@@ -2,29 +2,6 @@ import { ReactNode, SyntheticEvent } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
 import { ICoordinate } from "../common/common.types";
 
-export enum Placement {
-  CENTER,
-  LEFT,
-  RIGHT,
-  TOP,
-  BOTTOM,
-  TOP_LEFT,
-  TOP_RIGHT,
-  BOTTOM_LEFT,
-  BOTTOM_RIGHT,
-}
-
-export interface TextStyle {
-  size?: number;
-  color?: string;
-  outlineWidth?: number;
-  outlineColor?: string;
-  placement?: Placement;
-  offset?: number;
-  offsetFromIcon?: boolean;
-  textOptional?: boolean;
-}
-
 export interface IPosition {
   x: number;
   y: number;
@@ -52,20 +29,11 @@ export interface IIconStyle {
 
 interface IBaseMarkerProps {
   coordinate: ICoordinate;
-  children?: ReactNode;
+  children: ReactNode;
   style?: StyleProp<ViewStyle>;
   iconStyle?: IIconStyle;
   onPress?: (event: SyntheticEvent<any, ICoordinate>) => void;
 }
-
-export type IconAsset =
-  | string
-  | number
-  | {
-      height: number;
-      uri: string;
-      width: number;
-    };
 
 export interface IMarkerViewProps extends IBaseMarkerProps {}
 

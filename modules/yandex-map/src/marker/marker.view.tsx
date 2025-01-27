@@ -19,7 +19,7 @@ export default function MarkerView({
       iconStyle={iconStyle}
       onPress={onPress}
     >
-      {children && <View style={{ zIndex: 0 }}>{children}</View>}
+      <View style={{ zIndex: 0 }}>{children}</View>
     </NativeView>
   );
 }
