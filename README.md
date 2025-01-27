@@ -222,3 +222,7 @@ into [Yandex MapKit](https://yandex.ru/dev/mapkit/doc) .
 | `strokeWidth` | *(optional)* **number**                       | Circle stroke width    |
 | `strokeColor` | *(optional)* **string** (f.e. 'red' or HEX)   | Circle stroke color    |
 | `fillColor`   | *(optional)* **string** (f.e. 'red' or HEX)   | Circle fill color      |
+
+## Roadmap
+
+- [ ]  Implementing IOS basic usage
