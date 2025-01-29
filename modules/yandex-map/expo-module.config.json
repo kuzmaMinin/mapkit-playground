@@ -7,7 +7,8 @@
   "apple": {
     "modules": [
       "YandexMapModule"
-    ]
+    ],
+    "appDelegateSubscribers": ["AppLifecycleDelegate"]
   },
   "android": {
     "modules": [

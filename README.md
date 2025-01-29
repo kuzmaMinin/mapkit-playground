@@ -14,9 +14,7 @@ New Architecture is fully supported!
 
 ## Get started
 
-1. At current moment there is no npm package you can use, so just grab the ***modules*** folder and paste it into a root
-   of
-   your project.
+1. At current moment there is no npm package you can use, so just grab the ***modules*** folder and paste it into a root of your project.
 
 2. Copy **mapkit.plugin.js** from the example to a root of your project
 
