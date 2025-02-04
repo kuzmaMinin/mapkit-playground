@@ -37,4 +37,6 @@ interface IBaseMarkerProps {
 
 export interface IMarkerViewProps extends IBaseMarkerProps {}
 
-export interface INativeMarkerViewProps extends IBaseMarkerProps {}
+export interface INativeMarkerViewProps extends IBaseMarkerProps {
+  onMarkerPress?: (event: SyntheticEvent<any, ICoordinate>) => void;
+}

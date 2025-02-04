@@ -5,7 +5,11 @@ public class YandexMapModule: Module {
     Name("YandexMap")
 
     View(YandexMapView.self) {
-        Events("onMapReady", "onMapTap", "onMapLongTap")
+        Events("onMapReady", "onMapTap", "onMapLongTap", "onClusterPress")
+        
+        Prop("clusterized") { (view: YandexMapView, isClusterized: Bool) in
+            view.setClusterized(isClusterized)
+        }
         
         Prop("scrollEnabled") { (view: YandexMapView, isScrollEnabled: Bool) in
             view.setScrollEnabled(isScrollEnabled)
@@ -25,6 +29,16 @@ public class YandexMapModule: Module {
         
         Prop("initialRegion") { (view: YandexMapView, position: Position) in
             view.setInitialRegion(position)
+        }
+        
+        AsyncFunction("moveToCenter") { (view: YandexMapView, position: Position) in
+            view.moveCamera(position)
+        }
+        
+        AsyncFunction("fitMarkers") { (view: YandexMapView, points: Array<Position>) in
+            let markers = points.map { $0.toPoint() }
+            
+            view.fitMarkers(markers)
         }
     }
   }

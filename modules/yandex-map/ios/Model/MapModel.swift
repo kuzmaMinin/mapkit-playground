@@ -9,13 +9,13 @@ struct Position: Record {
     var longitude: Double = 0.0
     
     @Field
-    var zoom: Float? = 13.0
+    var zoom: Float? = nil
     
     @Field
-    var azimuth: Float? = .zero
+    var azimuth: Float? = nil
     
     @Field
-    var tilt: Float? = .zero
+    var tilt: Float? = nil
     
     func toPoint() -> YMKPoint {
         return YMKPoint(latitude: latitude, longitude: longitude)
@@ -24,4 +24,5 @@ struct Position: Record {
 
 struct MapConfig {
     var initialRegion: Position? = nil
+    var clusterized: Bool = false
 }

@@ -17,9 +17,11 @@ export default function MarkerView({
       style={{ position: "absolute" }}
       coordinate={coordinate}
       iconStyle={iconStyle}
-      onPress={onPress}
+      onMarkerPress={onPress}
     >
       <View style={{ zIndex: 0 }}>{children}</View>
     </NativeView>
   );
 }
+
+// TODO: Android replace onPress with onMarkerPress on native side

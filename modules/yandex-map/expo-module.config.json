@@ -6,7 +6,8 @@
   ],
   "apple": {
     "modules": [
-      "YandexMapModule"
+      "YandexMapModule",
+      "MarkerModule"
     ],
     "appDelegateSubscribers": ["AppLifecycleDelegate"]
   },
