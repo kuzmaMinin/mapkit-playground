@@ -14,6 +14,8 @@ class MarkerView: ExpoView {
         placemarkConfig.iconView = subview
         
         subview.isOpaque = false
+        
+        super.insertSubview(subview, at: atIndex)
     }
     
     func setCoordinate(_ point: YMKPoint) {
@@ -24,33 +26,40 @@ class MarkerView: ExpoView {
         placemarkConfig.iconStyle = style
     }
     
+    func updateCommonMarker() {
+        placemark?.geometry = placemarkConfig.coordinate
+        
+        placemark?.addTapListener(with: markerTapListener)
+        
+        let iconView = YRTViewProvider(uiView: placemarkConfig.iconView)
+        
+        placemark?.setViewWithView(
+            iconView ?? YRTViewProvider(),
+            style: placemarkConfig.iconStyle
+        )
+    }
+    
     func updateMarker() {
-//        if delegate?.mapConfig.clusterized == true {
-//            guard let clusterizedCollection = delegate?.clusterizedCollection else { return }
-//            
-//            placemark = clusterizedCollection.addPlacemark()
-//            
-//            placemark?.geometry = placemarkConfig.coordinate
-//            
-//            placemark?.addTapListener(with: markerTapListener)
-//            
-//            clusterizedCollection.clusterPlacemarks(withClusterRadius: 60, minZoom: 15)
-//        } else {
+        if delegate?.mapConfig.clusterized == true {
+            guard let clusterizedCollection = delegate?.clusterizedCollection else { return }
+            
+            placemark = clusterizedCollection.addPlacemark()
+            
+            updateCommonMarker()
+            
+            let clusterConfig = delegate?.clusterConfig ?? ClusterConfigModel()
+            
+            clusterizedCollection.clusterPlacemarks(
+                withClusterRadius: clusterConfig.clusterRadius,
+                minZoom: UInt(clusterConfig.minZoom)
+            )
+        } else {
             guard let markersCollection = delegate?.markersCollection else { return }
             
             placemark = markersCollection.addPlacemark()
             
-            placemark?.geometry = placemarkConfig.coordinate
-            
-            placemark?.addTapListener(with: markerTapListener)
-            
-            let iconView = YRTViewProvider(uiView: placemarkConfig.iconView)
-            
-            placemark?.setViewWithView(
-                iconView ?? YRTViewProvider(),
-                style: placemarkConfig.iconStyle
-            )
-//        }
+            updateCommonMarker()
+        }
     }
 }
 

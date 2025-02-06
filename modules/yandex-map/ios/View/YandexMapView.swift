@@ -5,6 +5,7 @@ protocol MarkerDelegate: AnyObject {
     var markersCollection: YMKMapObjectCollection? { get }
     var clusterizedCollection: YMKClusterizedPlacemarkCollection? { get }
     var mapConfig: MapConfig { get }
+    var clusterConfig: ClusterConfigModel { get }
 }
 
 class YandexMapView: ExpoView, MarkerDelegate {
@@ -21,6 +22,9 @@ class YandexMapView: ExpoView, MarkerDelegate {
     var markersCollection: YMKMapObjectCollection?
     var clusterizedCollection: YMKClusterizedPlacemarkCollection?
     
+    var clusterConfig: ClusterConfigModel = ClusterConfigModel()
+    var clusterStyle: ClusterStyleModel = ClusterStyleModel()
+    
     private var mapView: YMKMapView?
     var markerViews: Array<MarkerView> = []
     
@@ -36,19 +40,39 @@ class YandexMapView: ExpoView, MarkerDelegate {
             markerViews.append(markerView)
             
             break
-            
         case  let markerView as MarkerView where isMapLoaded:
+            markerView.delegate = self
             markerView.updateMarker()
             
             break
-            
-            
         default:
             break
-            
         }
         
         super.insertSubview(view, at: index)
+    }
+    
+    override func willRemoveSubview(_ view: UIView) {
+        switch view {
+        // TODO: check case when last placemark not disappeared
+        case _ as MarkerView:
+            if mapConfig.clusterized {
+                clusterizedCollection?.remove(with: (view as! MarkerView).placemark!)
+                
+                clusterizedCollection?.clusterPlacemarks(
+                    withClusterRadius: clusterConfig.clusterRadius,
+                    minZoom: UInt(clusterConfig.minZoom)
+                )
+            } else {
+                markersCollection?.remove(with: (view as! MarkerView).placemark!)
+            }
+            
+            break
+        default:
+            break
+        }
+        
+        super.willRemoveSubview(view)
     }
     
     func setScrollEnabled(_ isScrollEnabled: Bool) {
@@ -73,6 +97,14 @@ class YandexMapView: ExpoView, MarkerDelegate {
     
     func setClusterized(_ isClusterized: Bool) {
         mapConfig.clusterized = isClusterized
+    }
+    
+    func setClusterConfig(_ config: ClusterConfigModel) {
+        clusterConfig = config
+    }
+    
+    func setClusterStyle(_ style: ClusterStyleModel) {
+        clusterStyle = style
     }
 
     func moveCamera(_ position: Position) {
@@ -183,10 +215,9 @@ final class MapLoadedListener: NSObject, YMKMapLoadedListener {
         
         guard let initialRegion = viewController?.mapConfig.initialRegion else { return }
         
-        // TODO: check initial region
         let cameraPosition = YMKCameraPosition(
             target: initialRegion.toPoint(),
-            zoom: initialRegion.zoom ?? 13,
+            zoom: initialRegion.zoom ?? INITIAL_CAMERA_ZOOM,
             azimuth: initialRegion.azimuth ?? 0,
             tilt: initialRegion.tilt ?? 0
         )
@@ -219,7 +250,11 @@ final class ClusterListener: NSObject, YMKClusterListener, YMKClusterTapListener
     }
     
     func onClusterAdded(with cluster: YMKCluster) {
-        //cluster.appearance.setViewWithView(YRTViewProvider(uiView: ClusterView()))
+        let clusterView = ClusterView()
+        clusterView.count = cluster.size
+        clusterView.clusterStyle = viewController?.clusterStyle ?? ClusterStyleModel()
+        
+        cluster.appearance.setViewWithView(YRTViewProvider(uiView: clusterView))
         
         cluster.addClusterTapListener(with: self)
     }

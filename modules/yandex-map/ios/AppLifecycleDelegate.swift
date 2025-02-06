@@ -6,8 +6,7 @@ public class AppLifecycleDelegate: ExpoAppDelegateSubscriber {
             _ application: UIApplication,
             didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
         ) -> Bool {
-            // TODO: move to const
-            guard let key = Bundle.main.object(forInfoDictionaryKey: "MAPKIT_API_KEY") as? String else {
+            guard let key = Bundle.main.object(forInfoDictionaryKey: MAPKIT_API_KEY) as? String else {
                 return false
             }
             

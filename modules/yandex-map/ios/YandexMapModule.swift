@@ -11,6 +11,14 @@ public class YandexMapModule: Module {
             view.setClusterized(isClusterized)
         }
         
+        Prop("clusterStyle") { (view: YandexMapView, clusterStyle: ClusterStyleModel) in
+            view.setClusterStyle(clusterStyle)
+        }
+        
+        Prop("clusterConfig") { (view: YandexMapView, config: ClusterConfigModel) in
+            view.setClusterConfig(config)
+        }
+        
         Prop("scrollEnabled") { (view: YandexMapView, isScrollEnabled: Bool) in
             view.setScrollEnabled(isScrollEnabled)
         }

@@ -1,6 +1,6 @@
 import ExpoModulesCore
 import YandexMapsMobile
-// TODO: move to const
+
 struct Position: Record {
     @Field
     var latitude: Double = 0.0
