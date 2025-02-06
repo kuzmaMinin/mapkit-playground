@@ -28,13 +28,14 @@ import java.net.URL
 
 @SuppressLint("ViewConstructor")
 class MarkerView(context: Context, appContext: AppContext) : ExpoView(context, appContext) {
-    val onPress by EventDispatcher()
+    val onMarkerPress by EventDispatcher()
+
     var placemark: PlacemarkMapObject? = null
 
     private var placemarkConfig: PlacemarkConfig = PlacemarkConfig()
 
     private var placemarkTapListener = MapObjectTapListener { _, point ->
-        onPress(mapOf("latitude" to point.latitude, "longitude" to point.longitude))
+        onMarkerPress(mapOf("latitude" to point.latitude, "longitude" to point.longitude))
         true
     }
 

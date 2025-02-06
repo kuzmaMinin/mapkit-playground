@@ -19,7 +19,7 @@ class MarkerModule : Module() {
                 view.setIconStyleValue(style.toIconStyle())
             }
 
-            Events("onPress")
+            Events("onMarkerPress")
         }
     }
 }

@@ -115,7 +115,7 @@ class YandexMapView(context: Context, appContext: AppContext) : ExpoView(context
         val zoom = position.zoom ?: map?.cameraPosition?.zoom
         val azimuth = position.azimuth ?: map?.cameraPosition?.azimuth
         val tilt = position.tilt ?: map?.cameraPosition?.tilt
-
+        // TODO: refactor with 259
         map?.move(
             CameraPosition(
                 point,
@@ -256,6 +256,7 @@ class YandexMapView(context: Context, appContext: AppContext) : ExpoView(context
         }
 
         if (mapConfig.initialRegion != null) {
+            // TODO: refactor with 118
             map?.move(
                 CameraPosition(
                     mapConfig.initialRegion!!.toPoint(),
