@@ -8,25 +8,31 @@ protocol MarkerDelegate: AnyObject {
     var clusterConfig: ClusterConfigModel { get }
 }
 
-class YandexMapView: ExpoView, MarkerDelegate {
+protocol MapObjectsDelegate: AnyObject {
+    var mapObjects: YMKMapObjectCollection? { get }
+}
+
+class YandexMapView: ExpoView, MarkerDelegate, MapObjectsDelegate {
     let onMapReady = EventDispatcher()
     let onMapTap = EventDispatcher()
     let onMapLongTap = EventDispatcher()
     let onClusterPress = EventDispatcher()
     
-    var isMapLoaded = false
-    var mapConfig: MapConfig = MapConfig()
     var map: YMKMap?
-    
     var mapObjects: YMKMapObjectCollection?
     var markersCollection: YMKMapObjectCollection?
     var clusterizedCollection: YMKClusterizedPlacemarkCollection?
     
+    var mapConfig: MapConfig = MapConfig()
     var clusterConfig: ClusterConfigModel = ClusterConfigModel()
     var clusterStyle: ClusterStyleModel = ClusterStyleModel()
     
     private var mapView: YMKMapView?
+    
     var markerViews: Array<MarkerView> = []
+    var circleViews: Array<CircleView> = []
+    
+    var isMapLoaded = false
     
     private lazy var mapLoadedListener: YMKMapLoadedListener = MapLoadedListener(viewController: self)
     private lazy var mapInputListener: YMKMapInputListener = InputListener(viewController: self)
@@ -40,9 +46,20 @@ class YandexMapView: ExpoView, MarkerDelegate {
             markerViews.append(markerView)
             
             break
+        case let circleView as CircleView where !isMapLoaded:
+            circleView.delegate = self
+            circleViews.append(circleView)
+            
+            break
         case  let markerView as MarkerView where isMapLoaded:
             markerView.delegate = self
             markerView.updateMarker()
+            
+            break
+            
+        case let circleView as CircleView where isMapLoaded:
+            circleView.delegate = self
+            circleView.updateCircle()
             
             break
         default:
@@ -66,6 +83,11 @@ class YandexMapView: ExpoView, MarkerDelegate {
             } else {
                 markersCollection?.remove(with: (view as! MarkerView).placemark!)
             }
+            
+            break
+            
+        case _ as CircleView:
+            mapObjects?.remove(with: (view as! CircleView).circleMapObject!)
             
             break
         default:
@@ -212,6 +234,7 @@ final class MapLoadedListener: NSObject, YMKMapLoadedListener {
         viewController?.onMapReady(["payload": "success"])
         
         viewController?.markerViews.forEach({ $0.updateMarker() })
+        viewController?.circleViews.forEach({ $0.updateCircle() })
         
         guard let initialRegion = viewController?.mapConfig.initialRegion else { return }
         

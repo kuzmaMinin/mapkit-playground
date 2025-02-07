@@ -23,5 +23,3 @@ export default function MarkerView({
     </NativeView>
   );
 }
-
-// TODO: Android replace onPress with onMarkerPress on native side
