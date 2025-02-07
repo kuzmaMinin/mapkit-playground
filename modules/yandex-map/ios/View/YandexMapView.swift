@@ -31,6 +31,7 @@ class YandexMapView: ExpoView, MarkerDelegate, MapObjectsDelegate {
     
     var markerViews: Array<MarkerView> = []
     var circleViews: Array<CircleView> = []
+    var polygonViews: Array<PolygonView> = []
     
     var isMapLoaded = false
     
@@ -51,6 +52,11 @@ class YandexMapView: ExpoView, MarkerDelegate, MapObjectsDelegate {
             circleViews.append(circleView)
             
             break
+        case let polygonView as PolygonView where !isMapLoaded:
+            polygonView.delegate = self
+            polygonViews.append(polygonView)
+            
+            break
         case  let markerView as MarkerView where isMapLoaded:
             markerView.delegate = self
             markerView.updateMarker()
@@ -60,6 +66,11 @@ class YandexMapView: ExpoView, MarkerDelegate, MapObjectsDelegate {
         case let circleView as CircleView where isMapLoaded:
             circleView.delegate = self
             circleView.updateCircle()
+            
+            break
+        case let polygonView as PolygonView where isMapLoaded:
+            polygonView.delegate = self
+            polygonView.updatePolygon()
             
             break
         default:
@@ -88,6 +99,11 @@ class YandexMapView: ExpoView, MarkerDelegate, MapObjectsDelegate {
             
         case _ as CircleView:
             mapObjects?.remove(with: (view as! CircleView).circleMapObject!)
+            
+            break
+            
+        case _ as PolygonView:
+            mapObjects?.remove(with: (view as! PolygonView).polygonMapObject!)
             
             break
         default:
@@ -235,6 +251,7 @@ final class MapLoadedListener: NSObject, YMKMapLoadedListener {
         
         viewController?.markerViews.forEach({ $0.updateMarker() })
         viewController?.circleViews.forEach({ $0.updateCircle() })
+        viewController?.polygonViews.forEach({ $0.updatePolygon() })
         
         guard let initialRegion = viewController?.mapConfig.initialRegion else { return }
         
