@@ -32,6 +32,7 @@ class YandexMapView: ExpoView, MarkerDelegate, MapObjectsDelegate {
     var markerViews: Array<MarkerView> = []
     var circleViews: Array<CircleView> = []
     var polygonViews: Array<PolygonView> = []
+    var polylineViews: Array<PolylineView> = []
     
     var isMapLoaded = false
     
@@ -57,12 +58,17 @@ class YandexMapView: ExpoView, MarkerDelegate, MapObjectsDelegate {
             polygonViews.append(polygonView)
             
             break
+        case let polylineView as PolylineView where !isMapLoaded:
+            polylineView.delegate = self
+            polylineViews.append(polylineView)
+            
+            break
         case  let markerView as MarkerView where isMapLoaded:
             markerView.delegate = self
             markerView.updateMarker()
             
             break
-            
+        
         case let circleView as CircleView where isMapLoaded:
             circleView.delegate = self
             circleView.updateCircle()
@@ -71,6 +77,11 @@ class YandexMapView: ExpoView, MarkerDelegate, MapObjectsDelegate {
         case let polygonView as PolygonView where isMapLoaded:
             polygonView.delegate = self
             polygonView.updatePolygon()
+            
+            break
+        case let polylineView as PolylineView where isMapLoaded:
+            polylineView.delegate = self
+            polylineView.updatePolyline()
             
             break
         default:
@@ -104,6 +115,10 @@ class YandexMapView: ExpoView, MarkerDelegate, MapObjectsDelegate {
             
         case _ as PolygonView:
             mapObjects?.remove(with: (view as! PolygonView).polygonMapObject!)
+            
+            break
+        case _ as PolylineView:
+            mapObjects?.remove(with: (view as! PolylineView).polylineMapObject!)
             
             break
         default:
@@ -252,6 +267,7 @@ final class MapLoadedListener: NSObject, YMKMapLoadedListener {
         viewController?.markerViews.forEach({ $0.updateMarker() })
         viewController?.circleViews.forEach({ $0.updateCircle() })
         viewController?.polygonViews.forEach({ $0.updatePolygon() })
+        viewController?.polylineViews.forEach({ $0.updatePolyline() })
         
         guard let initialRegion = viewController?.mapConfig.initialRegion else { return }
         

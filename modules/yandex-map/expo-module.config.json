@@ -9,7 +9,8 @@
       "YandexMapModule",
       "MarkerModule",
       "CircleModule",
-      "PolygonModule"
+      "PolygonModule",
+      "PolylineModule"
     ],
     "appDelegateSubscribers": ["AppLifecycleDelegate"]
   },
