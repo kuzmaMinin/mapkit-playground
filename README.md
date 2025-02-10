@@ -1,16 +1,19 @@
 # Expo Yandex MapKit
 
+> [!IMPORTANT]
+> Expo modules still don't work in Windows enviroment. See [FYI](https://github.com/expo/fyi/blob/main/wsl.md).
+
 This module is a wrapper of light version (current version is *4.10.1-lite*) of native
 library [Yandex MapKit](https://yandex.ru/dev/mapkit/doc).
-At the moment only Android part is implemented, but I'm working with IOS too.
-There is not all features are supported, but I'm gonna to create a roadmap, and you can observe it.
+There is not all features are supported, but one can observe the [roadmap](#Roadmap).
 
 This module is have not tested for production yet. Before you want to use this module in your prod project be sure that
 all functionality works well.
 It takes a lot of time to provide all props from native version, but feel free to add a feature request or contact
 me [kuzma89klg@gmail.com](mailto:kuzma89klg@gmail.com).
 
-New Architecture is fully supported!
+> [!TIP]
+> New Architecture is fully supported!
 
 ## Get started
 
@@ -58,7 +61,6 @@ const {height, width} = useWindowDimensions();
     style={{width, height}}
 >
     <Marker
-        key="unique_key"
         coordinate={{latitude: 59.936046, longitude: 30.326869}}
     >
         // It's required to provide a children property to view
@@ -66,6 +68,30 @@ const {height, width} = useWindowDimensions();
             <Text>$</Text>
         </View>
     </Marker>
+
+    <Polyline 
+      key="unique_polyline"
+      points={[
+          { latitude: 59.936046, longitude: 30.326869 },
+          { latitude: 59.938185, longitude: 30.32808 },
+          { latitude: 59.937376, longitude: 30.33621 },
+        ]}
+    />
+
+    <Polygon
+      key="unique_polygon"
+      points={[ 
+        // ...
+      ]}
+    />
+
+    <Circle
+      key="unique_circle"
+      center={{ 
+        // ...
+      }}
+      radius={100}
+    />
 </>
 ```
 
@@ -223,4 +249,10 @@ into [Yandex MapKit](https://yandex.ru/dev/mapkit/doc) .
 
 ## Roadmap
 
-- [ ]  Implementing IOS basic usage
+- [x]  IOS basic usage
+- [ ]  Custom cluster view
+- [ ]  Draggable markers
+- [ ]  Resizable map features
+- [ ]  Focus rect
+- [ ]  Points of interests
+- [ ]  Investigate how to add web support
