@@ -230,8 +230,8 @@ class YandexMapView: ExpoView, MarkerDelegate, MapObjectsDelegate {
     
     
     required init (appContext: AppContext? = nil) {
-        // TODO: check vulkan preffered
-        mapView = YMKMapView(frame: CGRect.zero, vulkanPreferred: true)
+        // TODO: add vulkan preffered on simulator
+        mapView = YMKMapView(frame: CGRect.zero)
         
         map = mapView?.mapWindow.map
         mapObjects = map?.mapObjects
