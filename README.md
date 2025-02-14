@@ -1,7 +1,7 @@
 # Expo Yandex MapKit
 
 > [!IMPORTANT]
-> Expo modules still don't work in Windows enviroment. See [FYI](https://github.com/expo/fyi/blob/main/wsl.md).
+> Expo >= 52 is required
 
 This module is a wrapper of light version (current version is *4.10.1-lite*) of native
 library [Yandex MapKit](https://yandex.ru/dev/mapkit/doc).
